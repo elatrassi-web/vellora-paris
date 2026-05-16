@@ -14,7 +14,7 @@
         "type": "color",
         "id": "color_primary",
         "label": "Noir principal",
-        "default": "#000000"
+        "default": "#0D0D0D"
       },
       {
         "type": "color",
@@ -32,7 +32,7 @@
         "type": "color",
         "id": "color_border",
         "label": "Gris clair",
-        "default": "#E6E6E6"
+        "default": "#E5E5E5"
       },
       {
         "type": "color",
@@ -58,7 +58,7 @@
         "type": "color",
         "id": "checkout_accent_color",
         "label": "Couleur d'accentuation (Boutons)",
-        "default": "#000000"
+        "default": "#0D0D0D"
       },
       {
         "type": "color",
