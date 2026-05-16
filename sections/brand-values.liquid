@@ -1,0 +1,102 @@
+<div class="brand-values" data-section-id="{{ section.id }}">
+  <div class="container">
+    <div class="values-grid">
+
+      <div class="value-item fade-up" style="animation-delay: 0.1s;">
+        <div class="value-icon">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M6 3h12l4 6-10 13L2 9z"/></svg>
+        </div>
+        <h3 class="value-title">QUALITÉ</h3>
+        <p class="value-desc">Matériaux haut de gamme</p>
+      </div>
+
+      <div class="value-item fade-up" style="animation-delay: 0.2s;">
+        <div class="value-icon">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        </div>
+        <h3 class="value-title">MINIMALISME</h3>
+        <p class="value-desc">Design épuré, détails subtils</p>
+      </div>
+
+      <div class="value-item fade-up" style="animation-delay: 0.3s;">
+        <div class="value-icon">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"/></svg>
+        </div>
+        <h3 class="value-title">EXCLUSIVITÉ</h3>
+        <p class="value-desc">Éditions limitées, pièces uniques</p>
+      </div>
+
+      <div class="value-item fade-up" style="animation-delay: 0.4s;">
+        <div class="value-icon">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        </div>
+        <h3 class="value-title">AUTHENTICITÉ</h3>
+        <p class="value-desc">Une marque vraie, une communauté</p>
+      </div>
+
+      <div class="value-item fade-up" style="animation-delay: 0.5s;">
+        <div class="value-icon">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+        </div>
+        <h3 class="value-title">AMBITION</h3>
+        <p class="value-desc">Pensé pour aller plus loin</p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<style>
+  .brand-values {
+    padding: 60px 0;
+    background-color: var(--color-background);
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .values-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    text-align: center;
+  }
+  @media screen and (min-width: 768px) {
+    .values-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  @media screen and (min-width: 1024px) {
+    .values-grid {
+      grid-template-columns: repeat(5, 1fr);
+    }
+  }
+  .value-icon {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    color: var(--color-primary);
+  }
+  .value-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+  }
+  .value-desc {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    line-height: 1.4;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Valeurs de la Marque",
+  "presets": [
+    {
+      "name": "Valeurs de la Marque",
+      "category": "Texte"
+    }
+  ]
+}
+{% endschema %}

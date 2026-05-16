@@ -17,6 +17,13 @@
         {% if section.settings.logo %}
           <img src="{{ section.settings.logo | img_url: 'master' }}" alt="{{ shop.name }}">
         {% else %}
+          <div class="header__logo-svg">
+            <svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10 20 L40 80 L50 60 L20 20 Z" fill="var(--color-primary)"/>
+              <path d="M90 20 L50 100 L40 80 L80 20 Z" fill="var(--color-primary)"/>
+              <path d="M40 20 L55 50 L65 30 L50 20 Z" fill="var(--color-primary)"/>
+            </svg>
+          </div>
           <h2>VELLORA <br><span>PARIS</span></h2>
         {% endif %}
       </a>
@@ -55,14 +62,17 @@
       <!-- Icons -->
       <div class="header__icons">
         <button class="header__icon" aria-label="Recherche" onclick="toggleSearch()">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         </button>
+        <a href="{{ routes.account_url }}" class="header__icon" aria-label="Compte">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </a>
         <a href="/pages/wishlist" class="header__icon" aria-label="Favoris">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
           <span class="header__icon-count" id="wishlist-count">0</span>
         </a>
         <button class="header__icon" aria-label="Panier" onclick="openMiniCart()">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
           <span class="header__icon-count">{{ cart.item_count }}</span>
         </button>
       </div>
@@ -119,18 +129,27 @@
     height: 60px;
   }
   .header__logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
+  }
+  .header__logo-svg {
+    margin-bottom: 5px;
   }
   .header__logo h2 {
     margin: 0;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     line-height: 1.1;
-    letter-spacing: 2px;
+    letter-spacing: 6px;
+    font-weight: 500;
   }
   .header__logo span {
-    font-size: 0.9rem;
-    letter-spacing: 4px;
-    font-weight: 400;
+    font-size: 0.75rem;
+    letter-spacing: 8px;
+    font-weight: 300;
+    display: block;
+    margin-top: 2px;
   }
   .header__menu {
     display: flex;

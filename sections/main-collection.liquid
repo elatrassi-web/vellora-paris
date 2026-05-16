@@ -371,6 +371,11 @@
 
         // Update URL
         window.history.replaceState({}, '', `${window.location.pathname}?${searchParams.toString()}`);
+
+        // Re-check wishlist status for newly loaded products
+        if (typeof checkWishlistStatus === 'function') {
+          checkWishlistStatus();
+        }
       });
   }
 </script>

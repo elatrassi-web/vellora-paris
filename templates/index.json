@@ -32,12 +32,26 @@
       "settings": {
         "title": "NOUVEAUTÉS"
       }
+    },
+    "values": {
+      "type": "brand-values"
+    },
+    "lookbook": {
+      "type": "lookbook",
+      "blocks": {
+        "look_1": { "type": "look" },
+        "look_2": { "type": "look" },
+        "look_3": { "type": "look" }
+      },
+      "block_order": ["look_1", "look_2", "look_3"]
     }
   },
   "order": [
     "hero",
     "presentation",
     "brands",
-    "featured"
+    "featured",
+    "values",
+    "lookbook"
   ]
 }

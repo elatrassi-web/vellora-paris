@@ -1,0 +1,345 @@
+<div class="lookbook" data-section-id="{{ section.id }}">
+  <div class="container">
+    <div class="lookbook__header fade-up">
+      <h2>{{ section.settings.title | default: 'LOOKBOOK' }}</h2>
+      <p>{{ section.settings.subtitle | default: 'Découvrez comment porter nos pièces' }}</p>
+    </div>
+
+    <div class="lookbook__grid">
+      {% for block in section.blocks %}
+        <div class="lookbook__item fade-up" style="animation-delay: {{ forloop.index | modulo: 3 | times: 0.1 }}s">
+          <div class="lookbook__image-wrapper" onclick="openLookbookModal('lookbook-modal-{{ block.id }}')">
+            {% if block.settings.image != blank %}
+              <img src="{{ block.settings.image | img_url: '800x' }}" alt="Lookbook image" loading="lazy">
+            {% else %}
+              <div class="lookbook__placeholder">Image</div>
+            {% endif %}
+
+            <div class="lookbook__overlay">
+              <span>VOIR LES PRODUITS</span>
+            </div>
+          </div>
+
+          <!-- Modal for this look -->
+          <div id="lookbook-modal-{{ block.id }}" class="lookbook__modal" aria-hidden="true">
+            <div class="lookbook__modal-overlay" onclick="closeLookbookModal('lookbook-modal-{{ block.id }}')"></div>
+            <div class="lookbook__modal-content">
+              <button class="lookbook__modal-close" onclick="closeLookbookModal('lookbook-modal-{{ block.id }}')">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+
+              <div class="lookbook__modal-layout">
+                <div class="lookbook__modal-image">
+                  {% if block.settings.image != blank %}
+                    <img src="{{ block.settings.image | img_url: '1000x' }}" alt="Look">
+                  {% else %}
+                    <div class="lookbook__placeholder">Image</div>
+                  {% endif %}
+                </div>
+
+                <div class="lookbook__modal-products">
+                  <h3>Dans ce look</h3>
+                  <div class="lookbook__products-list">
+                    {% for i in (1..3) %}
+                      {% capture product_key %}product_{{ i }}{% endcapture %}
+                      {% assign product_handle = block.settings[product_key] %}
+
+                      {% if product_handle != blank %}
+                        {% assign product = all_products[product_handle] %}
+                        <div class="lookbook__product-item">
+                          <a href="{{ product.url }}" class="lookbook__product-img">
+                            <img src="{{ product.featured_image | img_url: '200x' }}" alt="{{ product.title }}">
+                          </a>
+                          <div class="lookbook__product-info">
+                            <a href="{{ product.url }}" class="lookbook__product-title">{{ product.title }}</a>
+                            <p class="lookbook__product-price">{{ product.price | money }}</p>
+                            <a href="{{ product.url }}" class="link-underline">Acheter</a>
+                          </div>
+                        </div>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<style>
+  .lookbook {
+    padding: 60px 0;
+  }
+  .lookbook__header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  .lookbook__header h2 {
+    font-size: 2rem;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+  }
+  .lookbook__header p {
+    color: var(--color-text-secondary);
+  }
+
+  .lookbook__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  @media screen and (min-width: 768px) {
+    .lookbook__grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media screen and (min-width: 1024px) {
+    .lookbook__grid { grid-template-columns: repeat(3, 1fr); gap: 30px; }
+  }
+
+  .lookbook__image-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3/4;
+    cursor: pointer;
+    overflow: hidden;
+    background: var(--color-border);
+  }
+  .lookbook__image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+  .lookbook__placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-secondary);
+  }
+  .lookbook__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .lookbook__overlay span {
+    color: white;
+    font-weight: bold;
+    border: 1px solid white;
+    padding: 10px 20px;
+    letter-spacing: 1px;
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
+  }
+  .lookbook__image-wrapper:hover img {
+    transform: scale(1.05);
+  }
+  .lookbook__image-wrapper:hover .lookbook__overlay {
+    opacity: 1;
+  }
+  .lookbook__image-wrapper:hover .lookbook__overlay span {
+    transform: translateY(0);
+  }
+
+  /* Modal */
+  .lookbook__modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    visibility: hidden;
+  }
+  .lookbook__modal.is-open {
+    pointer-events: auto;
+    visibility: visible;
+  }
+  .lookbook__modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .lookbook__modal.is-open .lookbook__modal-overlay {
+    opacity: 1;
+  }
+  .lookbook__modal-content {
+    position: relative;
+    background: var(--color-background);
+    width: 95%;
+    max-width: 1000px;
+    max-height: 90vh;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all 0.3s;
+  }
+  .lookbook__modal.is-open .lookbook__modal-content {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  .lookbook__modal-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 2;
+    background: white;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+
+  .lookbook__modal-layout {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow-y: auto;
+  }
+  @media screen and (min-width: 768px) {
+    .lookbook__modal-layout {
+      flex-direction: row;
+      overflow: hidden; /* handle scroll inside columns */
+    }
+  }
+  .lookbook__modal-image {
+    width: 100%;
+  }
+  @media screen and (min-width: 768px) {
+    .lookbook__modal-image { width: 50%; height: 100%; }
+  }
+  .lookbook__modal-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .lookbook__modal-products {
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+  }
+  @media screen and (min-width: 768px) {
+    .lookbook__modal-products { width: 50%; overflow-y: auto; }
+  }
+  .lookbook__modal-products h3 {
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    font-size: 1.2rem;
+  }
+  .lookbook__product-item {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .lookbook__product-img {
+    width: 80px;
+    height: 100px;
+    background: var(--color-border);
+    flex-shrink: 0;
+  }
+  .lookbook__product-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .lookbook__product-title {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+  }
+  .lookbook__product-price {
+    margin-bottom: 10px;
+  }
+</style>
+
+<script>
+  function openLookbookModal(id) {
+    document.getElementById(id).classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLookbookModal(id) {
+    document.getElementById(id).classList.remove('is-open');
+    document.body.style.overflow = '';
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Lookbook",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titre"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Sous-titre"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "look",
+      "name": "Look",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image du look (Aspect ratio 3:4 recommandé)"
+        },
+        {
+          "type": "product",
+          "id": "product_1",
+          "label": "Produit 1"
+        },
+        {
+          "type": "product",
+          "id": "product_2",
+          "label": "Produit 2"
+        },
+        {
+          "type": "product",
+          "id": "product_3",
+          "label": "Produit 3"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Lookbook Lifestyle",
+      "category": "Image"
+    }
+  ]
+}
+{% endschema %}

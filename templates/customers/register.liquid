@@ -1,0 +1,144 @@
+<div class="customer-register">
+  <div class="container customer__container">
+    <div class="customer__form fade-up">
+      <h1 tabindex="-1">Créer un compte</h1>
+      <p>Rejoignez la communauté VELLORA PARIS.</p>
+
+      {%- form 'create_customer', novalidate: 'novalidate' -%}
+        {%- if form.errors -%}
+          <div class="form__message error" tabindex="-1" autofocus>
+            <h2 class="form-status">Veuillez corriger les erreurs suivantes :</h2>
+            <ul>
+              {%- for field in form.errors -%}
+                <li>
+                  {%- if field == 'form' -%}
+                    {{ form.errors.messages[field] }}
+                  {%- else -%}
+                    <a href="#RegisterForm-{{ field }}">
+                      {{ form.errors.translated_fields[field] | capitalize }}
+                      {{ form.errors.messages[field] }}
+                    </a>
+                  {%- endif -%}
+                </li>
+              {%- endfor -%}
+            </ul>
+          </div>
+        {%- endif -%}
+
+        <div class="form-group">
+          <label for="RegisterForm-FirstName">Prénom</label>
+          <input
+            type="text"
+            name="customer[first_name]"
+            id="RegisterForm-FirstName"
+            {% if form.first_name %}value="{{ form.first_name }}"{% endif %}
+            autocomplete="given-name"
+            placeholder="Prénom"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="RegisterForm-LastName">Nom</label>
+          <input
+            type="text"
+            name="customer[last_name]"
+            id="RegisterForm-LastName"
+            {% if form.last_name %}value="{{ form.last_name }}"{% endif %}
+            autocomplete="family-name"
+            placeholder="Nom"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="RegisterForm-email">E-mail <span aria-hidden="true">*</span></label>
+          <input
+            type="email"
+            name="customer[email]"
+            id="RegisterForm-email"
+            {% if form.email %} value="{{ form.email }}"{% endif %}
+            spellcheck="false"
+            autocapitalize="off"
+            autocomplete="email"
+            aria-required="true"
+            {% if form.errors contains 'email' %}
+              aria-invalid="true"
+              aria-describedby="RegisterForm-email-error"
+            {% endif %}
+            placeholder="Email"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="RegisterForm-password">Mot de passe <span aria-hidden="true">*</span></label>
+          <input
+            type="password"
+            name="customer[password]"
+            id="RegisterForm-password"
+            aria-required="true"
+            {% if form.errors contains 'password' %}
+              aria-invalid="true"
+              aria-describedby="RegisterForm-password-error"
+            {% endif %}
+            placeholder="Mot de passe"
+            required
+          >
+        </div>
+
+        <button type="submit" class="btn btn--submit">CRÉER LE COMPTE</button>
+
+        <div class="customer__register-link">
+          <a href="{{ routes.account_login_url }}" class="link-underline">Déjà un compte ? Se connecter</a>
+        </div>
+      {%- endform -%}
+    </div>
+  </div>
+</div>
+
+<style>
+  .customer-register {
+    padding: 80px 0;
+    min-height: 60vh;
+  }
+  .customer__container {
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  .customer__form h1 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .customer__form > p {
+    text-align: center;
+    color: var(--color-text-secondary);
+    margin-bottom: 30px;
+  }
+  .form-group {
+    margin-bottom: 20px;
+  }
+  .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    font-size: 0.9rem;
+  }
+  .form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--color-border);
+    font-family: var(--font-body);
+  }
+  .btn--submit {
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 20px;
+  }
+  .customer__register-link {
+    text-align: center;
+    margin-top: 30px;
+  }
+  .error { color: red; }
+</style>

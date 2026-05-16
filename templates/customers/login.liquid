@@ -1,0 +1,180 @@
+<div class="customer-login">
+  <div class="container customer__container">
+
+    <div id="recover-form" class="customer__form fade-up" style="display: none;">
+      <h1 tabindex="-1">Réinitialiser le mot de passe</h1>
+      <p>Nous vous enverrons un e-mail pour réinitialiser votre mot de passe.</p>
+
+      {%- form 'recover_customer_password' -%}
+        {% assign recover_success = form.posted_successfully? %}
+
+        <div class="form-group">
+          <label for="RecoverEmail">E-mail</label>
+          <input type="email"
+            value=""
+            name="email"
+            id="RecoverEmail"
+            autocorrect="off"
+            autocapitalize="off"
+            autocomplete="email"
+            {% if form.errors %}
+              aria-invalid="true"
+              aria-describedby="RecoverEmail-email-error"
+              autofocus
+            {% endif %}
+            placeholder="Email"
+            required
+          >
+        </div>
+
+        {%- if form.errors -%}
+          <small id="RecoverEmail-email-error" class="form__message error">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="red" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            {{ form.errors.messages['form'] }}
+          </small>
+        {%- endif -%}
+
+        <button type="submit" class="btn btn--submit">SOUMETTRE</button>
+
+        <a href="#login" class="link-underline" onclick="toggleRecoverForm(false)">Annuler</a>
+      {%- endform -%}
+    </div>
+
+    <div id="login-form" class="customer__form fade-up">
+      <h1 tabindex="-1">Connexion</h1>
+
+      {%- if recover_success == true -%}
+        <div class="form-status-list form__message" tabindex="-1" autofocus>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="green" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          Un e-mail vous a été envoyé.
+        </div>
+      {%- endif -%}
+
+      {%- form 'customer_login', novalidate: 'novalidate' -%}
+        {%- if form.errors -%}
+          <div class="form__message error" tabindex="-1" autofocus>
+            <h2 class="form-status">Veuillez corriger les erreurs suivantes :</h2>
+            {{ form.errors | default_errors }}
+          </div>
+        {%- endif -%}
+
+        <div class="form-group">
+          <label for="CustomerEmail">E-mail</label>
+          <input
+            type="email"
+            name="customer[email]"
+            id="CustomerEmail"
+            autocomplete="email"
+            autocorrect="off"
+            autocapitalize="off"
+            {% if form.errors contains 'form' %}
+              aria-invalid="true"
+            {% endif %}
+            placeholder="Email"
+            required
+          >
+        </div>
+
+        {%- if form.password_needed -%}
+          <div class="form-group">
+            <div style="display:flex; justify-content:space-between;">
+              <label for="CustomerPassword">Mot de passe</label>
+              <a href="#recover" class="link-underline" style="font-size:0.8rem;" onclick="toggleRecoverForm(true)">Mot de passe oublié ?</a>
+            </div>
+            <input
+              type="password"
+              value=""
+              name="customer[password]"
+              id="CustomerPassword"
+              autocomplete="current-password"
+              {% if form.errors contains 'form' %}
+                aria-invalid="true"
+              {% endif %}
+              placeholder="Mot de passe"
+              required
+            >
+          </div>
+        {%- endif -%}
+
+        <button type="submit" class="btn btn--submit">SE CONNECTER</button>
+
+        <div class="customer__register-link">
+          <p>Nouveau client ?</p>
+          <a href="{{ routes.account_register_url }}" class="link-underline">Créer un compte</a>
+        </div>
+      {%- endform -%}
+    </div>
+
+  </div>
+</div>
+
+<style>
+  .customer-login {
+    padding: 80px 0;
+    min-height: 60vh;
+  }
+  .customer__container {
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  .customer__form h1 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 30px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .customer__form > p {
+    text-align: center;
+    color: var(--color-text-secondary);
+    margin-bottom: 20px;
+  }
+  .form-group {
+    margin-bottom: 20px;
+  }
+  .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    font-size: 0.9rem;
+  }
+  .form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--color-border);
+    font-family: var(--font-body);
+  }
+  .btn--submit {
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 20px;
+  }
+  .customer__register-link {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--color-border);
+  }
+  .customer__register-link p {
+    margin-bottom: 10px;
+  }
+  .error { color: red; }
+</style>
+
+<script>
+  function toggleRecoverForm(show) {
+    if (show) {
+      document.getElementById('recover-form').style.display = 'block';
+      document.getElementById('login-form').style.display = 'none';
+      window.location.hash = '#recover';
+    } else {
+      document.getElementById('recover-form').style.display = 'none';
+      document.getElementById('login-form').style.display = 'block';
+      window.location.hash = '';
+    }
+  }
+
+  if (window.location.hash === '#recover') {
+    toggleRecoverForm(true);
+  }
+</script>
