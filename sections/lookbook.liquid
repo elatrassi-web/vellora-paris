@@ -202,7 +202,7 @@
     background: var(--color-background);
     width: 95%;
     max-width: 1000px;
-    max-height: 90vh;
+    height: 85vh; /* Fixé pour éviter la déformation */
     z-index: 1;
     display: flex;
     flex-direction: column;
@@ -243,6 +243,8 @@
   }
   .lookbook__modal-image {
     width: 100%;
+    height: 40vh; /* Hauteur fixe sur mobile pour ne pas écraser l'image */
+    flex-shrink: 0;
   }
   @media screen and (min-width: 768px) {
     .lookbook__modal-image { width: 50%; height: 100%; }
@@ -252,11 +254,23 @@
     height: 100%;
     object-fit: cover;
   }
+  .lookbook__placeholder {
+    width: 100%;
+    height: 100%;
+    background: var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    font-weight: bold;
+  }
 
   .lookbook__modal-products {
     padding: 30px;
     display: flex;
     flex-direction: column;
+    flex: 1;
   }
   @media screen and (min-width: 768px) {
     .lookbook__modal-products { width: 50%; overflow-y: auto; }
