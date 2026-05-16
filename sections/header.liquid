@@ -36,20 +36,47 @@
               {% if link.links != blank %}
                 <div class="header__mega-menu fade-up">
                   <div class="container header__mega-menu-container">
-                    <ul class="header__mega-menu-list">
-                      {% for childlink in link.links %}
-                        <li>
-                          <a href="{{ childlink.url }}" class="header__mega-menu-title">{{ childlink.title }}</a>
-                          {% if childlink.links != blank %}
-                            <ul>
-                              {% for grandchildlink in childlink.links %}
-                                <li><a href="{{ grandchildlink.url }}">{{ grandchildlink.title }}</a></li>
-                              {% endfor %}
-                            </ul>
+                    <div class="header__mega-menu-grid">
+                      <!-- Navigation Links -->
+                      <ul class="header__mega-menu-list">
+                        {% for childlink in link.links %}
+                          <li>
+                            <a href="{{ childlink.url }}" class="header__mega-menu-title">{{ childlink.title }}</a>
+                            {% if childlink.links != blank %}
+                              <ul>
+                                {% for grandchildlink in childlink.links %}
+                                  <li><a href="{{ grandchildlink.url }}">{{ grandchildlink.title }}</a></li>
+                                {% endfor %}
+                              </ul>
+                            {% endif %}
+                          </li>
+                        {% endfor %}
+                      </ul>
+
+                      <!-- Mega Menu Promo Images (from blocks) -->
+                      {% assign has_promo = false %}
+                      {% for block in section.blocks %}
+                        {% if block.type == 'mega_menu_image' %}
+                          {% assign trigger_link = block.settings.menu_item | downcase %}
+                          {% assign current_link = link.title | downcase %}
+                          {% if trigger_link == current_link %}
+                            {% assign has_promo = true %}
+                            <div class="header__mega-menu-promo">
+                              <a href="{{ block.settings.link }}" class="header__promo-image-wrapper">
+                                {% if block.settings.image != blank %}
+                                  <img src="{{ block.settings.image | img_url: '400x' }}" alt="{{ block.settings.title }}" loading="lazy">
+                                {% else %}
+                                  <div class="header__promo-placeholder"></div>
+                                {% endif %}
+                                <div class="header__promo-content">
+                                  <span class="header__promo-title">{{ block.settings.title }}</span>
+                                </div>
+                              </a>
+                            </div>
                           {% endif %}
-                        </li>
+                        {% endif %}
                       {% endfor %}
-                    </ul>
+                    </div>
                   </div>
                 </div>
               {% endif %}
@@ -194,10 +221,56 @@
     opacity: 1;
     max-height: 500px; /* Adjust based on content */
   }
+  .header__mega-menu-grid {
+    display: flex;
+    gap: 40px;
+  }
   .header__mega-menu-list {
+    flex: 2;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 30px;
+  }
+  .header__mega-menu-promo {
+    flex: 1;
+    display: flex;
+    gap: 20px;
+  }
+  .header__promo-image-wrapper {
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 3/4;
+    background: var(--color-border);
+    overflow: hidden;
+  }
+  .header__promo-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+  .header__promo-placeholder {
+    width: 100%;
+    height: 100%;
+    background: var(--color-secondary);
+  }
+  .header__promo-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px;
+    background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+    color: var(--color-background);
+  }
+  .header__promo-title {
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .header__promo-image-wrapper:hover img {
+    transform: scale(1.05);
   }
   .header__mega-menu-title {
     font-weight: bold;
@@ -362,6 +435,35 @@
       "id": "menu",
       "label": "Menu principal",
       "default": "main-menu"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "mega_menu_image",
+      "name": "Image Mega Menu",
+      "settings": [
+        {
+          "type": "text",
+          "id": "menu_item",
+          "label": "Titre du lien principal",
+          "info": "Ex: 'Vêtements' ou 'Marques' pour déclencher l'affichage de l'image"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titre sur l'image"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Lien de l'image"
+        }
+      ]
     }
   ]
 }
