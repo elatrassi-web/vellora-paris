@@ -1,14 +1,25 @@
 <div class="featured-collection" data-section-id="{{ section.id }}">
   <div class="container">
     <div class="featured-collection__header fade-up">
-      <h2>{{ section.settings.title | default: 'COLLECTION EN VEDETTE' }}</h2>
-      <a href="{{ collections[section.settings.collection].url }}" class="link-underline">VOIR TOUT</a>
+      <h2>{{ section.settings.title | default: 'NOUVEAUTÉS' }}</h2>
+      {% assign view_all_link = '/collections/all' %}
+      {% if section.settings.collection != blank %}
+        {% assign view_all_link = collections[section.settings.collection].url %}
+      {% endif %}
+      <a href="{{ view_all_link }}" class="link-underline">VOIR TOUT</a>
     </div>
 
     <div class="featured-collection__slider-container fade-up">
       <div class="featured-collection__track">
-        {% assign collection = collections[section.settings.collection] %}
-        {% for product in collection.products limit: 8 %}
+        {% assign products_to_show = blank %}
+
+        {% if section.settings.collection != blank %}
+          {% assign products_to_show = collections[section.settings.collection].products %}
+        {% else %}
+          {% assign products_to_show = collections['all'].products | sort: 'created_at' | reverse %}
+        {% endif %}
+
+        {% for product in products_to_show limit: 8 %}
           <div class="product-card">
             <a href="{{ product.url }}" class="product-card__image-wrapper">
               <img src="{{ product.featured_image | img_url: '600x' }}" alt="{{ product.title }}" class="product-card__image">
