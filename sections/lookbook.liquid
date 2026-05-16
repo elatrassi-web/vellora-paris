@@ -40,12 +40,13 @@
                 <div class="lookbook__modal-products">
                   <h3>Dans ce look</h3>
                   <div class="lookbook__products-list">
+                    {% assign has_products = false %}
                     {% for i in (1..3) %}
                       {% capture product_key %}product_{{ i }}{% endcapture %}
-                      {% assign product_handle = block.settings[product_key] %}
+                      {% assign product = block.settings[product_key] %}
 
-                      {% if product_handle != blank %}
-                        {% assign product = all_products[product_handle] %}
+                      {% if product != blank %}
+                        {% assign has_products = true %}
                         <div class="lookbook__product-item">
                           <a href="{{ product.url }}" class="lookbook__product-img">
                             <img src="{{ product.featured_image | img_url: '200x' }}" alt="{{ product.title }}">
@@ -58,6 +59,19 @@
                         </div>
                       {% endif %}
                     {% endfor %}
+
+                    {% if has_products == false %}
+                      {% for i in (1..2) %}
+                        <div class="lookbook__product-item">
+                          <div class="lookbook__product-img"></div>
+                          <div class="lookbook__product-info">
+                            <span class="lookbook__product-title">Produit Exemple</span>
+                            <p class="lookbook__product-price">199,00 €</p>
+                            <a href="#" class="link-underline">Acheter</a>
+                          </div>
+                        </div>
+                      {% endfor %}
+                    {% endif %}
                   </div>
                 </div>
               </div>
