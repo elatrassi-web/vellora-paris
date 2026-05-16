@@ -12,6 +12,33 @@
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
       </button>
 
+      <!-- Mobile Navigation Drawer -->
+      <div id="mobile-menu-drawer" class="mobile-menu" aria-hidden="true">
+        <div class="mobile-menu__overlay" onclick="toggleMobileMenu()"></div>
+        <div class="mobile-menu__content">
+          <div class="mobile-menu__header">
+            <h2>Menu</h2>
+            <button class="mobile-menu__close" onclick="toggleMobileMenu()" aria-label="Fermer le menu">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+          <ul class="mobile-menu__list">
+            {% for link in linklists[section.settings.menu].links %}
+              <li class="mobile-menu__item">
+                <a href="{{ link.url }}" class="mobile-menu__link">{{ link.title }}</a>
+                {% if link.links != blank %}
+                  <ul class="mobile-menu__sublist">
+                    {% for childlink in link.links %}
+                      <li><a href="{{ childlink.url }}">- {{ childlink.title }}</a></li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+
       <!-- Logo -->
       <a href="/" class="header__logo">
         {% if section.settings.logo %}
@@ -360,6 +387,79 @@
     gap: 20px;
   }
 
+  /* Mobile Menu Styles */
+  .mobile-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1000;
+    pointer-events: none;
+    visibility: hidden;
+  }
+  .mobile-menu.is-open {
+    pointer-events: auto;
+    visibility: visible;
+  }
+  .mobile-menu__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .mobile-menu.is-open .mobile-menu__overlay {
+    opacity: 1;
+  }
+  .mobile-menu__content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 80%;
+    max-width: 300px;
+    height: 100%;
+    background: var(--color-background);
+    transform: translateX(-100%);
+    transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  .mobile-menu.is-open .mobile-menu__content {
+    transform: translateX(0);
+  }
+  .mobile-menu__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .mobile-menu__list {
+    padding: 20px;
+  }
+  .mobile-menu__item {
+    margin-bottom: 15px;
+  }
+  .mobile-menu__link {
+    font-weight: bold;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 10px;
+  }
+  .mobile-menu__sublist li {
+    margin-bottom: 10px;
+    padding-left: 10px;
+  }
+  .mobile-menu__sublist a {
+    color: var(--color-text-secondary);
+  }
+
   /* Utility classes for responsive design */
   @media screen and (max-width: 1023px) {
     .d-none { display: none; }
@@ -371,6 +471,16 @@
 </style>
 
 <script>
+  function toggleMobileMenu() {
+    const drawer = document.getElementById('mobile-menu-drawer');
+    drawer.classList.toggle('is-open');
+    if (drawer.classList.contains('is-open')) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+  }
+
   function toggleSearch() {
     const searchBar = document.getElementById('smart-search');
     searchBar.classList.toggle('is-open');

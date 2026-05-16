@@ -9,6 +9,14 @@
       <a href="{{ view_all_link }}" class="link-underline">VOIR TOUT</a>
     </div>
 
+    <div class="featured-collection__filters fade-up">
+      <button class="filter-btn is-active" data-filter="all">Tout</button>
+      <button class="filter-btn" data-filter="vêtements">Vêtements</button>
+      <button class="filter-btn" data-filter="sneakers">Sneakers</button>
+      <button class="filter-btn" data-filter="accessoires">Accessoires</button>
+      <button class="filter-btn" data-filter="lunettes">Lunettes</button>
+    </div>
+
     <div class="featured-collection__slider-container fade-up">
       <div class="featured-collection__track">
         {% assign products_to_show = blank %}
@@ -19,8 +27,9 @@
           {% assign products_to_show = collections['all'].products | sort: 'created_at' | reverse %}
         {% endif %}
 
-        {% for product in products_to_show limit: 8 %}
-          <div class="product-card">
+        {% for product in products_to_show limit: 12 %}
+          {% assign product_categories = product.type | downcase | append: ' ' | append: product.tags | join: ' ' | downcase %}
+          <div class="product-card js-filtered-product" data-categories="{{ product_categories }}">
             <a href="{{ product.url }}" class="product-card__image-wrapper">
               <img src="{{ product.featured_image | img_url: '600x' }}" alt="{{ product.title }}" class="product-card__image">
               {% if product.images.size > 1 %}
@@ -36,7 +45,7 @@
                 Authentique Vérifié
               </div>
 
-              <button class="product-card__quick-view" onclick="event.preventDefault(); openQuickView('{{ product.handle }}')">VUE RAPIDE</button>
+              <button class="product-card__quick-view" onclick="event.preventDefault(); openQuickView('{{ product.handle }}')">VOIR LE PRODUIT</button>
             </a>
             <div class="product-card__info">
               <h3 class="product-card__title"><a href="{{ product.url }}">{{ product.title }}</a></h3>
@@ -68,7 +77,31 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
+  }
+  .featured-collection__filters {
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    margin-bottom: 30px;
+    padding-bottom: 5px;
+  }
+  .featured-collection__filters::-webkit-scrollbar { display: none; }
+  .filter-btn {
+    font-family: var(--font-heading);
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+    transition: color 0.3s ease;
+    padding-bottom: 5px;
+    border-bottom: 2px solid transparent;
+  }
+  .filter-btn:hover, .filter-btn.is-active {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
   }
   .featured-collection h2 {
     font-size: 1.5rem;
@@ -131,7 +164,12 @@
   }
   .product-card__image-wrapper:hover .product-card__image-hover {
     opacity: 1;
-    transform: scale(1.05);
+    transform: scale(1.1);
+  }
+  /* Fallback hover effect if only one image exists */
+  .product-card__image-wrapper:hover img:only-child {
+    opacity: 1;
+    transform: scale(1.1);
   }
   .product-card__badge {
     position: absolute;
@@ -199,6 +237,37 @@
     font-size: 1.1rem;
   }
 </style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const products = document.querySelectorAll('.js-filtered-product');
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        // Remove active class from all buttons
+        filterBtns.forEach(b => b.classList.remove('is-active'));
+        // Add active class to clicked button
+        btn.classList.add('is-active');
+
+        const filterValue = btn.getAttribute('data-filter');
+
+        products.forEach(product => {
+          if (filterValue === 'all') {
+            product.style.display = 'block';
+          } else {
+            const categories = product.getAttribute('data-categories');
+            if (categories.includes(filterValue)) {
+              product.style.display = 'block';
+            } else {
+              product.style.display = 'none';
+            }
+          }
+        });
+      });
+    });
+  });
+</script>
 
 {% schema %}
 {
