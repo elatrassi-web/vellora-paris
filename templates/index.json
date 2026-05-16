@@ -23,9 +23,12 @@
         "brand_1": { "type": "brand", "settings": { "title": "Prada" } },
         "brand_2": { "type": "brand", "settings": { "title": "Asics" } },
         "brand_3": { "type": "brand", "settings": { "title": "New Balance" } },
-        "brand_4": { "type": "brand", "settings": { "title": "Loewe" } }
+        "brand_4": { "type": "brand", "settings": { "title": "Loewe" } },
+        "brand_5": { "type": "brand", "settings": { "title": "Chanel" } },
+        "brand_6": { "type": "brand", "settings": { "title": "Fred" } },
+        "brand_7": { "type": "brand", "settings": { "title": "Lunettes Premium" } }
       },
-      "block_order": ["brand_1", "brand_2", "brand_3", "brand_4"]
+      "block_order": ["brand_1", "brand_2", "brand_3", "brand_4", "brand_5", "brand_6", "brand_7"]
     },
     "featured": {
       "type": "featured-collection",

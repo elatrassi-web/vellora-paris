@@ -10,10 +10,14 @@
       "settings": {
         "title": "VOUS AIMEREZ AUSSI"
       }
+    },
+    "authenticity": {
+      "type": "authenticity-guarantee"
     }
   },
   "order": [
     "main",
+    "authenticity",
     "related"
   ]
 }

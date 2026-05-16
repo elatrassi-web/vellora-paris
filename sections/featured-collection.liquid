@@ -20,6 +20,11 @@
                 <span class="product-card__badge">NOUVEAU</span>
               {% endif %}
 
+              <div class="product-card__auth-badge">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                Authentique Vérifié
+              </div>
+
               <button class="product-card__quick-view" onclick="event.preventDefault(); openQuickView('{{ product.handle }}')">VUE RAPIDE</button>
             </a>
             <div class="product-card__info">
@@ -128,6 +133,25 @@
     padding: 4px 8px;
     z-index: 2;
     animation: pulse 2s infinite;
+  }
+  .product-card__auth-badge {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #1a1a1a;
+    font-size: 0.65rem;
+    font-weight: bold;
+    padding: 4px 8px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    z-index: 2;
+    text-transform: uppercase;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  .product-card__auth-badge svg {
+    color: #2e7d32; /* Green check */
   }
   @keyframes pulse {
     0% { transform: scale(1); }

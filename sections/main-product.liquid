@@ -31,16 +31,20 @@
         <p class="product__vendor">{{ product.vendor }}</p>
       {% endif %}
 
+      <div class="product__auth-badge">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2e7d32" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <span>100% AUTHENTIQUE VÉRIFIÉ</span>
+      </div>
+
       <h1 class="product__title">{{ product.title }}</h1>
       <p class="product__price">{{ product.price | money }}</p>
 
-      <div class="product__auth-badge">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-        <span>100% Authentique Vérifié</span>
-      </div>
-
       <div class="product__description-short">
-        {{ product.description | truncatewords: 20 }}
+        <p>{{ product.description | truncatewords: 20 }}</p>
+        <div class="product__cert-mention">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          Certificat d'authenticité inclus
+        </div>
       </div>
 
       {%- form 'product', product, id: 'product-form' -%}
@@ -234,17 +238,28 @@
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    background: #f8f8f8;
-    padding: 10px 15px;
-    border: 1px solid var(--color-border);
+    background: rgba(46, 125, 50, 0.1);
+    color: #2e7d32;
+    padding: 8px 12px;
     margin-bottom: 20px;
     font-weight: bold;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
   }
   .product__description-short {
     color: var(--color-text-secondary);
     margin-bottom: 30px;
     line-height: 1.6;
+  }
+  .product__cert-mention {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 15px;
+    font-weight: bold;
+    color: var(--color-primary);
+    font-size: 0.9rem;
   }
 
   /* Form */

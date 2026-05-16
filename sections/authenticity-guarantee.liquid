@@ -1,0 +1,132 @@
+<div class="authenticity-guarantee" data-section-id="{{ section.id }}">
+  <div class="container">
+    <div class="auth-guarantee__wrapper">
+
+      <div class="auth-guarantee__header fade-up">
+        <h2>{{ section.settings.title | default: 'GARANTIE AUTHENTICITÉ' }}</h2>
+        <p>{{ section.settings.subtitle | default: 'Chaque pièce VELLORA PARIS est rigoureusement inspectée' }}</p>
+      </div>
+
+      <div class="auth-guarantee__grid">
+
+        <div class="auth-guarantee__item fade-up" style="animation-delay: 0.1s;">
+          <div class="auth-guarantee__icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <h3>100% VÉRIFIÉ</h3>
+          <p>Nos experts indépendants vérifient chaque détail, des coutures aux matériaux, pour garantir l'authenticité absolue.</p>
+        </div>
+
+        <div class="auth-guarantee__item fade-up" style="animation-delay: 0.2s;">
+          <div class="auth-guarantee__icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          </div>
+          <h3>CERTIFICAT INCLUS</h3>
+          <p>Un certificat officiel avec numéro de série unique est délivré avec chaque commande pour une traçabilité totale.</p>
+        </div>
+
+        <div class="auth-guarantee__item fade-up" style="animation-delay: 0.3s;">
+          <div class="auth-guarantee__icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+          </div>
+          <h3>RETOURS SÉCURISÉS</h3>
+          <p>La pièce ne vous convient pas ? Renvoyez-la sous 30 jours, à condition que le sceau de garantie VELLORA soit intact.</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .authenticity-guarantee {
+    padding: 80px 0;
+    background-color: #f8f8f8;
+    border-top: 1px solid var(--color-border);
+  }
+  .auth-guarantee__wrapper {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  .auth-guarantee__header {
+    text-align: center;
+    margin-bottom: 50px;
+  }
+  .auth-guarantee__header h2 {
+    font-size: 2rem;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+    color: var(--color-primary);
+  }
+  .auth-guarantee__header p {
+    color: var(--color-text-secondary);
+    font-size: 1.1rem;
+  }
+  .auth-guarantee__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  @media screen and (min-width: 768px) {
+    .auth-guarantee__grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+    }
+  }
+  .auth-guarantee__item {
+    text-align: center;
+    padding: 30px;
+    background: var(--color-background);
+    border: 1px solid var(--color-border);
+    transition: transform 0.3s ease;
+  }
+  .auth-guarantee__item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  }
+  .auth-guarantee__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: rgba(46, 125, 50, 0.05);
+    color: #2e7d32;
+    margin-bottom: 20px;
+  }
+  .auth-guarantee__item h3 {
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    letter-spacing: 1px;
+  }
+  .auth-guarantee__item p {
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Garantie Authenticité",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titre"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Sous-titre"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Garantie Authenticité",
+      "category": "Texte"
+    }
+  ]
+}
+{% endschema %}
