@@ -1,0 +1,167 @@
+<div class="page-contact" data-section-id="{{ section.id }}">
+  <div class="container">
+    <h1 class="page__title fade-up">{{ page.title }}</h1>
+
+    <div class="contact__grid">
+      <!-- Contact Info -->
+      <div class="contact__info fade-up">
+        <div class="contact__info-block">
+          <h3>VELLORA PARIS</h3>
+          <p>L'expression d'un luxe urbain intemporel.</p>
+        </div>
+
+        <div class="contact__info-block">
+          <h4>Email</h4>
+          <a href="mailto:contact@velloraparis.fr">contact@velloraparis.fr</a>
+        </div>
+
+        <div class="contact__info-block">
+          <h4>Temps de réponse</h4>
+          <p>Notre équipe s'engage à vous répondre sous 24 à 48 heures ouvrées.</p>
+        </div>
+
+        <div class="contact__socials">
+          <a href="{{ settings.social_instagram_link }}" target="_blank" aria-label="Instagram">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </a>
+          <a href="{{ settings.social_tiktok_link }}" target="_blank" aria-label="TikTok">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Contact Form -->
+      <div class="contact__form-wrapper fade-up" style="animation-delay: 0.2s;">
+        {%- form 'contact', id: 'ContactForm' -%}
+          {%- if form.posted_successfully? -%}
+            <div class="form-status form-status-list form__message" tabindex="-1" autofocus>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="green" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              Merci ! Votre message a bien été envoyé.
+            </div>
+          {%- elsif form.errors -%}
+            <div class="form__message">
+              <h2 class="form-status caption-large text-body" role="alert" tabindex="-1" autofocus>Veuillez corriger les erreurs suivantes :</h2>
+              {{ form.errors | default_errors }}
+            </div>
+          {%- endif -%}
+
+          <div class="form-group">
+            <label for="ContactForm-name">Nom complet</label>
+            <input type="text" id="ContactForm-name" name="contact[name]" value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}" required>
+          </div>
+
+          <div class="form-group">
+            <label for="ContactForm-email">Email <span aria-hidden="true">*</span></label>
+            <input type="email" id="ContactForm-email" name="contact[email]" value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}" required>
+          </div>
+
+          <div class="form-group">
+            <label for="ContactForm-subject">Objet du message</label>
+            <select id="ContactForm-subject" name="contact[subject]">
+              <option value="Question sur un produit">Question sur un produit</option>
+              <option value="Suivi de commande">Suivi de commande</option>
+              <option value="Retour & Remboursement">Retour & Remboursement</option>
+              <option value="Autre">Autre</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="ContactForm-body">Message</label>
+            <textarea id="ContactForm-body" name="contact[body]" rows="6" required>{% if form.body %}{{ form.body }}{% endif %}</textarea>
+          </div>
+
+          <button type="submit" class="btn btn--submit">ENVOYER</button>
+        {%- endform -%}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .page__title {
+    text-align: center;
+    font-size: 2.5rem;
+    margin: 60px 0;
+    letter-spacing: 2px;
+  }
+  .contact__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    padding-bottom: 80px;
+  }
+  @media screen and (min-width: 768px) {
+    .contact__grid {
+      grid-template-columns: 1fr 2fr;
+      gap: 60px;
+    }
+  }
+
+  .contact__info-block {
+    margin-bottom: 30px;
+  }
+  .contact__info-block h3 {
+    margin-bottom: 10px;
+    letter-spacing: 2px;
+  }
+  .contact__info-block h4 {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 5px;
+    text-transform: uppercase;
+  }
+  .contact__info-block a {
+    font-weight: bold;
+    text-decoration: underline;
+  }
+  .contact__socials {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+  }
+
+  .contact__form-wrapper {
+    background: #f9f9f9;
+    padding: 40px;
+  }
+  .form-group {
+    margin-bottom: 20px;
+  }
+  .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    font-size: 0.9rem;
+  }
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--color-border);
+    background: var(--color-background);
+    font-family: var(--font-body);
+  }
+  .btn--submit {
+    width: 100%;
+    margin-top: 10px;
+  }
+  .form__message {
+    padding: 15px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .form-status-list {
+    background: #e8f5e9;
+    color: green;
+    border: 1px solid green;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Page Contact"
+}
+{% endschema %}

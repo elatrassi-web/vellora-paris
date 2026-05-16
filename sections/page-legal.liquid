@@ -1,0 +1,57 @@
+<div class="page-legal">
+  <div class="container page-legal__container">
+    <h1 class="page__title fade-up">{{ page.title }}</h1>
+
+    <div class="page-legal__content fade-up" style="animation-delay: 0.2s;">
+      {% if page.handle == 'politique-de-livraison' %}
+        <div class="legal-highlight">
+          <strong>VELLORA PARIS propose la livraison express GRATUITE dans le monde entier sur toutes les commandes.</strong>
+        </div>
+      {% endif %}
+
+      {{ page.content }}
+    </div>
+  </div>
+</div>
+
+<style>
+  .page-legal__container {
+    max-width: 800px;
+    padding-bottom: 80px;
+  }
+  .page__title {
+    text-align: center;
+    font-size: 2.5rem;
+    margin: 60px 0;
+    letter-spacing: 2px;
+  }
+  .page-legal__content {
+    line-height: 1.8;
+    color: var(--color-text-secondary);
+  }
+  .page-legal__content h2,
+  .page-legal__content h3,
+  .page-legal__content h4 {
+    color: var(--color-primary);
+    margin-top: 40px;
+    margin-bottom: 15px;
+  }
+  .page-legal__content p {
+    margin-bottom: 20px;
+  }
+  .page-legal__content ul,
+  .page-legal__content ol {
+    margin-bottom: 20px;
+    padding-left: 20px;
+  }
+  .page-legal__content li {
+    margin-bottom: 10px;
+  }
+  .legal-highlight {
+    background: #f8f8f8;
+    padding: 20px;
+    border-left: 4px solid var(--color-primary);
+    margin-bottom: 40px;
+    color: var(--color-primary);
+  }
+</style>

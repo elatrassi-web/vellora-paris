@@ -1,0 +1,19 @@
+{
+  "name": "Produit",
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "settings": {}
+    },
+    "related": {
+      "type": "featured-collection",
+      "settings": {
+        "title": "VOUS AIMEREZ AUSSI"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "related"
+  ]
+}

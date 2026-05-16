@@ -1,0 +1,198 @@
+<div id="quick-view-modal" class="quick-view" aria-hidden="true">
+  <div class="quick-view__overlay" onclick="closeQuickView()"></div>
+  <div class="quick-view__content fade-up">
+    <button class="quick-view__close" onclick="closeQuickView()" aria-label="Fermer">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="quick-view__inner" id="quick-view-inner">
+      <!-- Loading Spinner -->
+      <div class="quick-view__loader">
+        <svg class="spinner" viewBox="0 0 50 50"><circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle></svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .quick-view {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1001;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    visibility: hidden;
+  }
+  .quick-view.is-open {
+    pointer-events: auto;
+    visibility: visible;
+  }
+  .quick-view__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .quick-view.is-open .quick-view__overlay {
+    opacity: 1;
+  }
+  .quick-view__content {
+    position: relative;
+    background: var(--color-background);
+    width: 90%;
+    max-width: 900px;
+    height: 90vh;
+    max-height: 600px;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  @media screen and (min-width: 768px) {
+    .quick-view__content { height: auto; }
+  }
+  .quick-view__close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 2;
+    background: white;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  .quick-view__inner {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+  }
+  .quick-view__loader {
+    width: 50px;
+    height: 50px;
+  }
+  .spinner {
+    animation: rotate 2s linear infinite;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+  }
+  .spinner .path {
+    stroke: var(--color-primary);
+    stroke-linecap: round;
+    animation: dash 1.5s ease-in-out infinite;
+  }
+  @keyframes rotate { 100% { transform: rotate(360deg); } }
+  @keyframes dash {
+    0% { stroke-dasharray: 1, 150; stroke-dashoffset: 0; }
+    50% { stroke-dasharray: 90, 150; stroke-dashoffset: -35; }
+    100% { stroke-dasharray: 90, 150; stroke-dashoffset: -124; }
+  }
+
+  /* Injected Content Styles */
+  .qv-layout {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  @media screen and (min-width: 768px) {
+    .qv-layout { flex-direction: row; }
+  }
+  .qv-image {
+    width: 100%;
+    background: var(--color-border);
+  }
+  @media screen and (min-width: 768px) {
+    .qv-image { width: 50%; }
+  }
+  .qv-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .qv-info {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+  }
+  @media screen and (min-width: 768px) {
+    .qv-info { width: 50%; padding: 40px; overflow-y: auto; }
+  }
+  .qv-title { font-size: 1.5rem; margin-bottom: 10px; }
+  .qv-price { font-size: 1.2rem; font-weight: bold; margin-bottom: 20px; }
+  .qv-btn { margin-top: auto; width: 100%; }
+</style>
+
+<script>
+  function openQuickView(handle) {
+    const modal = document.getElementById('quick-view-modal');
+    const inner = document.getElementById('quick-view-inner');
+
+    // Reset to loader
+    inner.innerHTML = '<div class="quick-view__loader"><svg class="spinner" viewBox="0 0 50 50"><circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle></svg></div>';
+
+    modal.classList.add('is-open');
+    modal.querySelector('.quick-view__content').classList.add('is-visible');
+    document.body.style.overflow = 'hidden';
+
+    // Fetch product data
+    fetch(`/products/${handle}.js`)
+      .then(response => response.json())
+      .then(product => {
+        let optionsHtml = '';
+        if (product.variants.length > 1) {
+          optionsHtml += '<div style="margin-bottom:20px;"><strong>Variantes disponibles</strong><br>';
+          product.variants.forEach(v => {
+            optionsHtml += `<span style="display:inline-block; margin:5px; padding:5px 10px; border:1px solid #E6E6E6;">${v.title}</span>`;
+          });
+          optionsHtml += '</div>';
+        }
+
+        const html = `
+          <div class="qv-layout">
+            <div class="qv-image">
+              <img src="${product.featured_image}" alt="${product.title}">
+            </div>
+            <div class="qv-info">
+              ${product.vendor ? `<p style="font-size:0.8rem;text-transform:uppercase;color:#666;font-weight:bold;">${product.vendor}</p>` : ''}
+              <h2 class="qv-title">${product.title}</h2>
+              <p class="qv-price">${(product.price / 100).toFixed(2).replace('.', ',')} €</p>
+
+              <div style="display:inline-flex; align-items:center; gap:10px; background:#f8f8f8; padding:5px 10px; border:1px solid #E6E6E6; margin-bottom:20px; font-weight:bold; font-size:0.8rem;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                100% Authentique
+              </div>
+
+              ${optionsHtml}
+
+              <a href="/products/${product.handle}" class="btn qv-btn">VOIR LES DÉTAILS COMPLETS</a>
+            </div>
+          </div>
+        `;
+        inner.innerHTML = html;
+      })
+      .catch(error => {
+        inner.innerHTML = '<p>Une erreur est survenue lors du chargement du produit.</p>';
+      });
+  }
+
+  function closeQuickView() {
+    document.getElementById('quick-view-modal').classList.remove('is-open');
+    document.body.style.overflow = '';
+  }
+</script>

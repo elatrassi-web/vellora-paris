@@ -1,0 +1,159 @@
+<div class="page-about" data-section-id="{{ section.id }}">
+  {% if section.settings.hero_image != blank %}
+    <div class="page-hero" style="background-image: url('{{ section.settings.hero_image | img_url: '1920x' }}');">
+      <div class="page-hero__overlay"></div>
+      <h1 class="page-hero__title fade-up">{{ page.title }}</h1>
+    </div>
+  {% else %}
+    <div class="container">
+      <h1 class="page__title fade-up">{{ page.title }}</h1>
+    </div>
+  {% endif %}
+
+  <div class="container page-about__content">
+    <div class="page-about__grid">
+      <div class="page-about__text fade-up">
+        {{ page.content }}
+      </div>
+
+      {% if section.settings.side_image != blank %}
+        <div class="page-about__image fade-up" style="animation-delay: 0.2s;">
+          <img src="{{ section.settings.side_image | img_url: '800x' }}" alt="À propos de nous" loading="lazy">
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Partner Brands Section -->
+    <div class="page-about__partners fade-up">
+      <h2>Nos Marques Partenaires</h2>
+      <div class="partners-grid">
+        <div class="partner-item">Prada</div>
+        <div class="partner-item">Asics</div>
+        <div class="partner-item">New Balance</div>
+        <div class="partner-item">Loewe</div>
+        <div class="partner-item">Chanel</div>
+        <div class="partner-item">Fred</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .page-hero {
+    position: relative;
+    height: 40vh;
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-size: cover;
+    background-position: center;
+    margin-bottom: 60px;
+  }
+  .page-hero__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+  }
+  .page-hero__title {
+    position: relative;
+    z-index: 2;
+    color: var(--color-background);
+    font-size: 3rem;
+    letter-spacing: 2px;
+  }
+  .page__title {
+    text-align: center;
+    font-size: 2.5rem;
+    margin: 60px 0;
+    letter-spacing: 2px;
+  }
+
+  .page-about__content {
+    padding-bottom: 80px;
+  }
+  .page-about__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    margin-bottom: 80px;
+  }
+  @media screen and (min-width: 768px) {
+    .page-about__grid {
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 60px;
+    }
+  }
+  .page-about__text {
+    line-height: 1.8;
+    color: var(--color-text-secondary);
+  }
+  .page-about__text h2, .page-about__text h3 {
+    color: var(--color-primary);
+    margin-top: 30px;
+    margin-bottom: 15px;
+  }
+  .page-about__image img {
+    width: 100%;
+    height: auto;
+  }
+
+  .page-about__partners {
+    text-align: center;
+    border-top: 1px solid var(--color-border);
+    padding-top: 60px;
+  }
+  .page-about__partners h2 {
+    margin-bottom: 40px;
+  }
+  .partners-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  @media screen and (min-width: 768px) {
+    .partners-grid { grid-template-columns: repeat(3, 1fr); gap: 40px; }
+  }
+  @media screen and (min-width: 1024px) {
+    .partners-grid { grid-template-columns: repeat(6, 1fr); }
+  }
+  .partner-item {
+    font-family: var(--font-heading);
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    border: 1px solid var(--color-border);
+    transition: all 0.3s;
+  }
+  .partner-item:hover {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Page À propos",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Image d'en-tête (Hero)"
+    },
+    {
+      "type": "image_picker",
+      "id": "side_image",
+      "label": "Image de côté (Atelier/Équipe)"
+    }
+  ]
+}
+{% endschema %}

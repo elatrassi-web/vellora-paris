@@ -1,0 +1,382 @@
+<div class="collection-page" data-section-id="{{ section.id }}">
+  <!-- Collection Header -->
+  <div class="collection__header">
+    {% if collection.image %}
+      <img src="{{ collection.image | img_url: '1920x' }}" alt="{{ collection.title }}" class="collection__banner">
+    {% else %}
+      <div class="collection__banner collection__banner--placeholder"></div>
+    {% endif %}
+    <div class="collection__header-content fade-up">
+      <h1>{{ collection.title }}</h1>
+      {% if collection.description != blank %}
+        <div class="collection__description">{{ collection.description }}</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="container collection__container">
+    <!-- Filters Sidebar -->
+    <aside class="collection__filters" id="collection-filters">
+      <div class="collection__filters-header d-lg-none">
+        <h3>Filtres</h3>
+        <button onclick="toggleFilters()" aria-label="Fermer les filtres">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <form class="filter-form" id="filter-form">
+        <!-- Sort By -->
+        <div class="filter-group">
+          <h4>Trier par</h4>
+          <select name="sort_by" id="sort-by" onchange="applyFilters()">
+            {% for option in collection.sort_options %}
+              <option value="{{ option.value }}" {% if option.value == collection.sort_by %}selected{% endif %}>{{ option.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <!-- Filters -->
+        {% for filter in collection.filters %}
+          <div class="filter-group">
+            <h4>{{ filter.label }}</h4>
+            <ul class="filter-list">
+              {% for value in filter.values %}
+                <li>
+                  <label class="custom-checkbox">
+                    <input type="checkbox" name="{{ value.param_name }}" value="{{ value.value }}" id="Filter-{{ filter.label }}-{{ forloop.index }}" {% if value.active %}checked{% endif %} onchange="applyFilters()">
+                    <span class="checkmark"></span>
+                    {{ value.label }} <span class="filter-count">({{ value.count }})</span>
+                  </label>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endfor %}
+      </form>
+    </aside>
+
+    <!-- Product Grid -->
+    <div class="collection__main">
+      <div class="collection__mobile-toolbar d-lg-none">
+        <button class="btn btn--outline" onclick="toggleFilters()">Filtrer & Trier</button>
+        <p>{{ collection.products_count }} Produits</p>
+      </div>
+
+      <div class="product-grid" id="product-grid">
+        {% paginate collection.products by 12 %}
+          {% for product in collection.products %}
+            <div class="product-card fade-up" style="animation-delay: {{ forloop.index | modulo: 4 | times: 0.1 }}s">
+              <a href="{{ product.url }}" class="product-card__image-wrapper">
+                <img src="{{ product.featured_image | img_url: '600x' }}" alt="{{ product.title }}" class="product-card__image">
+                {% if product.images.size > 1 %}
+                  <img src="{{ product.images[1] | img_url: '600x' }}" alt="{{ product.title }} back" class="product-card__image-hover">
+                {% endif %}
+
+                {% if product.tags contains 'Edition Limitée' %}
+                  <span class="product-card__badge product-card__badge--dark">ÉDITION LIMITÉE</span>
+                {% elsif product.tags contains 'Nouveau' %}
+                  <span class="product-card__badge">NOUVEAU</span>
+                {% endif %}
+
+                <!-- Wishlist Icon -->
+                <button class="product-card__wishlist" onclick="event.preventDefault(); toggleWishlist('{{ product.handle }}')" aria-label="Ajouter aux favoris">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                </button>
+
+                <button class="product-card__quick-view" onclick="event.preventDefault(); openQuickView('{{ product.handle }}')">VUE RAPIDE</button>
+              </a>
+              <div class="product-card__info">
+                {% if product.vendor %}
+                  <p class="product-card__vendor">{{ product.vendor }}</p>
+                {% endif %}
+                <h3 class="product-card__title"><a href="{{ product.url }}">{{ product.title }}</a></h3>
+                <p class="product-card__price">{{ product.price | money }}</p>
+              </div>
+            </div>
+          {% else %}
+            <p>Aucun produit ne correspond à votre sélection.</p>
+          {% endfor %}
+
+          <!-- Pagination -->
+          {% if paginate.pages > 1 %}
+            <div class="pagination">
+              {{ paginate | default_pagination }}
+            </div>
+          {% endif %}
+        {% endpaginate %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .collection__header {
+    position: relative;
+    height: 30vh;
+    min-height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: var(--color-background);
+    margin-bottom: 40px;
+  }
+  .collection__banner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+  }
+  .collection__banner--placeholder {
+    background-color: var(--color-secondary);
+  }
+  .collection__header::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.4);
+    z-index: 2;
+  }
+  .collection__header-content {
+    position: relative;
+    z-index: 3;
+    padding: 0 20px;
+  }
+  .collection__header-content h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    letter-spacing: 2px;
+  }
+
+  .collection__container {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+  @media screen and (min-width: 1024px) {
+    .collection__container {
+      flex-direction: row;
+      align-items: flex-start;
+    }
+  }
+
+  /* Filters */
+  .collection__filters {
+    width: 100%;
+  }
+  @media screen and (min-width: 1024px) {
+    .collection__filters {
+      width: 250px;
+      flex-shrink: 0;
+      position: sticky;
+      top: 100px;
+    }
+  }
+  @media screen and (max-width: 1023px) {
+    .collection__filters {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 80vh;
+      background: var(--color-background);
+      z-index: 1000;
+      padding: 20px;
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+      overflow-y: auto;
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+      box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+    }
+    .collection__filters.is-open {
+      transform: translateY(0);
+    }
+  }
+  .collection__filters-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .filter-group {
+    margin-bottom: 30px;
+  }
+  .filter-group h4 {
+    font-size: 1rem;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+  }
+  .filter-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--color-border);
+    background: var(--color-background);
+    font-family: var(--font-body);
+  }
+  .filter-list li {
+    margin-bottom: 10px;
+  }
+  .custom-checkbox {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    padding-left: 30px;
+  }
+  .custom-checkbox input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+  .checkmark {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    height: 18px;
+    width: 18px;
+    background-color: transparent;
+    border: 1px solid var(--color-text-secondary);
+  }
+  .custom-checkbox:hover input ~ .checkmark {
+    border-color: var(--color-primary);
+  }
+  .custom-checkbox input:checked ~ .checkmark {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+  }
+  .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+    left: 5px;
+    top: 2px;
+    width: 4px;
+    height: 8px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+  .custom-checkbox input:checked ~ .checkmark:after {
+    display: block;
+  }
+  .filter-count {
+    color: var(--color-text-secondary);
+    font-size: 0.8rem;
+    margin-left: 5px;
+  }
+
+  /* Main & Grid */
+  .collection__main {
+    flex: 1;
+  }
+  .collection__mobile-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 20px;
+  }
+  @media screen and (min-width: 768px) {
+    .product-grid { grid-template-columns: repeat(2, 1fr); gap: 30px; }
+  }
+  @media screen and (min-width: 1024px) {
+    .product-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  /* Product Card specifics for Collection */
+  .product-card {
+    width: 100%;
+  }
+  .product-card__vendor {
+    font-size: 0.8rem;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  .product-card__wishlist {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 2;
+    background: var(--color-background);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+  }
+  .product-card__wishlist:hover {
+    transform: scale(1.1);
+  }
+  .product-card__badge--dark {
+    background-color: var(--color-secondary);
+  }
+
+  .pagination {
+    margin-top: 50px;
+    text-align: center;
+    grid-column: 1 / -1;
+  }
+  .pagination span, .pagination a {
+    display: inline-block;
+    padding: 10px 15px;
+    margin: 0 5px;
+    border: 1px solid var(--color-border);
+  }
+  .pagination .current {
+    background-color: var(--color-primary);
+    color: var(--color-background);
+    border-color: var(--color-primary);
+  }
+</style>
+
+<script>
+  function toggleFilters() {
+    document.getElementById('collection-filters').classList.toggle('is-open');
+  }
+
+  function applyFilters() {
+    const form = document.getElementById('filter-form');
+    const formData = new FormData(form);
+    const searchParams = new URLSearchParams(formData);
+
+    // AJAX Fetch
+    fetch(`${window.location.pathname}?${searchParams.toString()}`)
+      .then(response => response.text())
+      .then(html => {
+        const parser = new DOMParser();
+        const newDoc = parser.parseFromString(html, 'text/html');
+        const newGrid = newDoc.getElementById('product-grid');
+        document.getElementById('product-grid').innerHTML = newGrid.innerHTML;
+
+        // Update URL
+        window.history.replaceState({}, '', `${window.location.pathname}?${searchParams.toString()}`);
+      });
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Grille de Collection"
+}
+{% endschema %}

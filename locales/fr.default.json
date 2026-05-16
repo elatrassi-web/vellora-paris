@@ -1,0 +1,35 @@
+{
+  "general": {
+    "404": {
+      "title": "Page introuvable",
+      "subtext": "La page que vous recherchez n'existe pas.",
+      "link": "Retour à l'accueil"
+    },
+    "search": {
+      "no_results_html": "Aucun résultat trouvé pour \"{{ terms }}\".",
+      "results_with_count": {
+        "one": "1 résultat pour \"{{ terms }}\"",
+        "other": "{{ count }} résultats pour \"{{ terms }}\""
+      }
+    }
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "Ajouter au panier",
+      "sold_out": "Épuisé",
+      "unavailable": "Indisponible",
+      "regular_price": "Prix régulier",
+      "sale_price": "Prix réduit",
+      "buy_it_now": "Acheter maintenant"
+    }
+  },
+  "cart": {
+    "general": {
+      "title": "Votre panier",
+      "empty": "Votre panier est vide.",
+      "continue_shopping": "Continuer les achats",
+      "checkout": "Passer la commande",
+      "subtotal": "Sous-total"
+    }
+  }
+}

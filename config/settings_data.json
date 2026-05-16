@@ -1,0 +1,14 @@
+{
+  "current": "Default",
+  "presets": {
+    "Default": {
+      "color_primary": "#000000",
+      "color_secondary": "#1A1A1A",
+      "color_text_secondary": "#666666",
+      "color_border": "#E6E6E6",
+      "color_background": "#FFFFFF",
+      "checkout_accent_color": "#000000",
+      "checkout_button_color": "#FFFFFF"
+    }
+  }
+}

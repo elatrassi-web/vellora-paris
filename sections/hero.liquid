@@ -1,0 +1,184 @@
+<div class="hero-section" data-section-id="{{ section.id }}">
+  <div class="hero__media">
+    {% if section.settings.video_url != blank %}
+      <video class="hero__video fade-in" autoplay loop muted playsinline>
+        <source src="{{ section.settings.video_url }}" type="video/mp4">
+      </video>
+    {% elsif section.settings.image != blank %}
+      <div class="hero__image fade-in" style="background-image: url('{{ section.settings.image | img_url: 'master' }}');"></div>
+    {% else %}
+      <div class="hero__placeholder fade-in"></div>
+    {% endif %}
+    <div class="hero__overlay"></div>
+  </div>
+
+  <div class="hero__content">
+    <div class="hero__logo-wrapper fade-up">
+      {% if section.settings.hero_logo != blank %}
+        <img src="{{ section.settings.hero_logo | img_url: 'master' }}" alt="Vellora Logo" class="hero__logo">
+      {% else %}
+        <h1 class="hero__title">VELLORA PARIS</h1>
+      {% endif %}
+    </div>
+
+    <p class="hero__subtitle fade-up" style="animation-delay: 0.5s;">{{ section.settings.baseline | default: "L'expression d'un luxe urbain intemporel" }}</p>
+
+    <a href="{{ section.settings.cta_link | default: '/collections/all' }}" class="btn hero__btn fade-up" style="animation-delay: 0.8s;">
+      {{ section.settings.cta_text | default: "DÉCOUVRIR LA COLLECTION" }}
+    </a>
+  </div>
+
+  <div class="hero__scroll-indicator">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+  </div>
+</div>
+
+<style>
+  .hero-section {
+    position: relative;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-background);
+  }
+  .hero__media {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+  .hero__video,
+  .hero__image,
+  .hero__placeholder {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background-size: cover;
+    background-position: center;
+  }
+  .hero__placeholder {
+    background-color: var(--color-secondary);
+  }
+  .hero__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 2;
+  }
+  .hero__content {
+    position: relative;
+    z-index: 3;
+    text-align: center;
+    max-width: 800px;
+    padding: 0 20px;
+  }
+  .hero__logo-wrapper {
+    margin-bottom: 20px;
+  }
+  .hero__logo {
+    max-width: 300px;
+    margin: 0 auto;
+    animation: scaleUp 1s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+  }
+  .hero__title {
+    font-size: 3rem;
+    letter-spacing: 5px;
+    margin: 0;
+  }
+  @media screen and (min-width: 768px) {
+    .hero__title { font-size: 5rem; }
+  }
+  .hero__subtitle {
+    font-size: 1.2rem;
+    font-weight: 300;
+    letter-spacing: 2px;
+    margin-bottom: 40px;
+    text-transform: uppercase;
+  }
+  .hero__btn {
+    background-color: var(--color-primary);
+    color: var(--color-background);
+    border: 1px solid var(--color-primary);
+  }
+  .hero__btn:hover {
+    background-color: transparent;
+    border-color: var(--color-background);
+    color: var(--color-background);
+  }
+  .hero__scroll-indicator {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    animation: bounce 2s infinite;
+  }
+  @keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0) translateX(-50%); }
+    40% { transform: translateY(-20px) translateX(-50%); }
+    60% { transform: translateY(-10px) translateX(-50%); }
+  }
+</style>
+
+<script>
+  // Simple Parallax Effect
+  window.addEventListener('scroll', () => {
+    const heroMedia = document.querySelector('.hero__media');
+    if (heroMedia && window.scrollY < window.innerHeight) {
+      heroMedia.style.transform = `translateY(${window.scrollY * 0.4}px)`;
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Hero Fullscreen",
+  "settings": [
+    {
+      "type": "text",
+      "id": "video_url",
+      "label": "URL Vidéo MP4 (Optionnel)",
+      "info": "Prioritaire sur l'image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image de fond"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_logo",
+      "label": "Logo SVG/PNG au centre"
+    },
+    {
+      "type": "text",
+      "id": "baseline",
+      "label": "Baseline"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Texte Bouton"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Lien Bouton"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Fullscreen",
+      "category": "Image"
+    }
+  ]
+}
+{% endschema %}

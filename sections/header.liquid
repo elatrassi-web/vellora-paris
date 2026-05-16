@@ -1,0 +1,350 @@
+<header class="header" data-section-id="{{ section.id }}" data-section-type="header">
+  <div class="header__top-bar">
+    <div class="container">
+      <p>LIVRAISON GRATUITE DANS LE MONDE ENTIER</p>
+    </div>
+  </div>
+
+  <div class="header__main">
+    <div class="container header__container">
+      <!-- Mobile Menu Toggle -->
+      <button class="header__icon header__icon--menu d-lg-none" aria-label="Menu" onclick="toggleMobileMenu()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+      </button>
+
+      <!-- Logo -->
+      <a href="/" class="header__logo">
+        {% if section.settings.logo %}
+          <img src="{{ section.settings.logo | img_url: 'master' }}" alt="{{ shop.name }}">
+        {% else %}
+          <h2>VELLORA <br><span>PARIS</span></h2>
+        {% endif %}
+      </a>
+
+      <!-- Desktop Navigation (Mega Menu) -->
+      <nav class="header__nav d-none d-lg-block">
+        <ul class="header__menu">
+          {% for link in linklists[section.settings.menu].links %}
+            <li class="header__menu-item {% if link.links != blank %}has-dropdown{% endif %}">
+              <a href="{{ link.url }}" class="header__menu-link">{{ link.title }}</a>
+              {% if link.links != blank %}
+                <div class="header__mega-menu fade-up">
+                  <div class="container header__mega-menu-container">
+                    <ul class="header__mega-menu-list">
+                      {% for childlink in link.links %}
+                        <li>
+                          <a href="{{ childlink.url }}" class="header__mega-menu-title">{{ childlink.title }}</a>
+                          {% if childlink.links != blank %}
+                            <ul>
+                              {% for grandchildlink in childlink.links %}
+                                <li><a href="{{ grandchildlink.url }}">{{ grandchildlink.title }}</a></li>
+                              {% endfor %}
+                            </ul>
+                          {% endif %}
+                        </li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                </div>
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      </nav>
+
+      <!-- Icons -->
+      <div class="header__icons">
+        <button class="header__icon" aria-label="Recherche" onclick="toggleSearch()">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+        <a href="/pages/wishlist" class="header__icon" aria-label="Favoris">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          <span class="header__icon-count" id="wishlist-count">0</span>
+        </a>
+        <button class="header__icon" aria-label="Panier" onclick="openMiniCart()">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <span class="header__icon-count">{{ cart.item_count }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Smart Search (Hidden by default) -->
+  <div id="smart-search" class="smart-search" aria-hidden="true">
+    <div class="container">
+      <form action="/search" method="get" class="smart-search__form">
+        <input type="text" name="q" placeholder="Rechercher des marques, vêtements..." autocomplete="off" id="search-input">
+        <button type="submit" aria-label="Rechercher">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+      </form>
+      <div class="smart-search__results" id="search-results"></div>
+    </div>
+    <button class="smart-search__close" onclick="toggleSearch()" aria-label="Fermer la recherche">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+</header>
+
+<style>
+  .header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+    background-color: var(--color-background);
+    transition: transform 0.3s ease;
+  }
+  .header.is-sticky {
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+  .header__top-bar {
+    background-color: var(--color-primary);
+    color: var(--color-background);
+    text-align: center;
+    padding: 8px 0;
+    font-size: 0.75rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+  }
+  .header__container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 80px;
+    transition: height 0.3s ease;
+  }
+  .header.is-sticky .header__container {
+    height: 60px;
+  }
+  .header__logo {
+    text-align: center;
+  }
+  .header__logo h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    line-height: 1.1;
+    letter-spacing: 2px;
+  }
+  .header__logo span {
+    font-size: 0.9rem;
+    letter-spacing: 4px;
+    font-weight: 400;
+  }
+  .header__menu {
+    display: flex;
+    gap: 30px;
+  }
+  .header__menu-link {
+    font-family: var(--font-heading);
+    font-weight: 500;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    position: relative;
+    padding: 10px 0;
+  }
+  .header__menu-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--color-primary);
+    transition: width 0.3s ease;
+  }
+  .header__menu-item:hover .header__menu-link::after {
+    width: 100%;
+  }
+  .header__mega-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: var(--color-background);
+    border-top: 1px solid var(--color-border);
+    padding: 40px 0;
+    visibility: hidden;
+    opacity: 0;
+    transition: all 0.4s ease;
+    max-height: 0;
+    overflow: hidden;
+  }
+  .header__menu-item.has-dropdown:hover .header__mega-menu {
+    visibility: visible;
+    opacity: 1;
+    max-height: 500px; /* Adjust based on content */
+  }
+  .header__mega-menu-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+  }
+  .header__mega-menu-title {
+    font-weight: bold;
+    margin-bottom: 15px;
+    display: block;
+    text-transform: uppercase;
+  }
+  .header__mega-menu-list ul li {
+    margin-bottom: 10px;
+  }
+  .header__mega-menu-list ul a {
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+  }
+  .header__mega-menu-list ul a:hover {
+    color: var(--color-primary);
+  }
+  .header__icons {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  .header__icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+  }
+  .header__icon-count {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: var(--color-primary);
+    color: var(--color-background);
+    font-size: 0.6rem;
+    font-weight: bold;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Smart Search Styles */
+  .smart-search {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: var(--color-background);
+    padding: 20px 0;
+    border-top: 1px solid var(--color-border);
+    visibility: hidden;
+    opacity: 0;
+    transition: all 0.3s ease;
+  }
+  .smart-search.is-open {
+    visibility: visible;
+    opacity: 1;
+  }
+  .smart-search__form {
+    display: flex;
+    align-items: center;
+    border-bottom: 2px solid var(--color-primary);
+    padding-bottom: 10px;
+  }
+  .smart-search__form input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 1.2rem;
+    font-family: var(--font-body);
+    padding: 10px;
+  }
+  .smart-search__close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+  }
+  .smart-search__results {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+  }
+
+  /* Utility classes for responsive design */
+  @media screen and (max-width: 1023px) {
+    .d-none { display: none; }
+  }
+  @media screen and (min-width: 1024px) {
+    .d-lg-none { display: none; }
+    .d-lg-block { display: block; }
+  }
+</style>
+
+<script>
+  function toggleSearch() {
+    const searchBar = document.getElementById('smart-search');
+    searchBar.classList.toggle('is-open');
+    if (searchBar.classList.contains('is-open')) {
+      document.getElementById('search-input').focus();
+    }
+  }
+
+  // Simple AJAX search implementation
+  const searchInput = document.getElementById('search-input');
+  const searchResults = document.getElementById('search-results');
+
+  searchInput.addEventListener('input', debounce(function() {
+    const query = this.value;
+    if (query.length > 2) {
+      fetch(`/search/suggest.json?q=${query}&resources[type]=product`)
+        .then(response => response.json())
+        .then(data => {
+          const products = data.resources.results.products;
+          if (products.length > 0) {
+            let html = '';
+            products.forEach(product => {
+              html += `
+                <a href="${product.url}" class="search-result-item">
+                  <img src="${product.image}" alt="${product.title}">
+                  <p>${product.title}</p>
+                  <span>${product.price}</span>
+                </a>
+              `;
+            });
+            searchResults.innerHTML = html;
+          } else {
+            searchResults.innerHTML = '<p>Aucun résultat trouvé.</p>';
+          }
+        });
+    } else {
+      searchResults.innerHTML = '';
+    }
+  }, 300));
+
+  function debounce(func, wait) {
+    let timeout;
+    return function() {
+      const context = this, args = arguments;
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(context, args), wait);
+    };
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu principal",
+      "default": "main-menu"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,12 @@
+{
+  "name": "Page À propos",
+  "sections": {
+    "main": {
+      "type": "page-about",
+      "settings": {}
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "name": "Accueil",
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "settings": {
+        "baseline": "L'expression d'un luxe urbain intemporel",
+        "cta_text": "DÉCOUVRIR LA COLLECTION",
+        "cta_link": "shopify:\/\/collections\/all"
+      }
+    },
+    "presentation": {
+      "type": "brand-presentation",
+      "settings": {
+        "title": "NOTRE HISTOIRE",
+        "btn_text": "DÉCOUVRIR VELLORA",
+        "btn_link": "shopify:\/\/pages\/about"
+      }
+    },
+    "brands": {
+      "type": "brands-grid",
+      "blocks": {
+        "brand_1": { "type": "brand", "settings": { "title": "Prada" } },
+        "brand_2": { "type": "brand", "settings": { "title": "Asics" } },
+        "brand_3": { "type": "brand", "settings": { "title": "New Balance" } },
+        "brand_4": { "type": "brand", "settings": { "title": "Loewe" } }
+      },
+      "block_order": ["brand_1", "brand_2", "brand_3", "brand_4"]
+    },
+    "featured": {
+      "type": "featured-collection",
+      "settings": {
+        "title": "NOUVEAUTÉS"
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "presentation",
+    "brands",
+    "featured"
+  ]
+}

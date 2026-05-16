@@ -1,0 +1,109 @@
+<div class="brand-presentation" data-section-id="{{ section.id }}">
+  <div class="container">
+    <div class="brand-presentation__wrapper">
+      <div class="brand-presentation__content fade-up">
+        <h2>{{ section.settings.title | default: 'NOTRE HISTOIRE' }}</h2>
+        <div class="brand-presentation__text">
+          {{ section.settings.text | default: '<p>VELLORA PARIS est une marketplace premium proposant une sélection de marques de luxe et sportswear haut de gamme. Tous les produits sont authentiques avec certification.</p>' }}
+        </div>
+        {% if section.settings.btn_text != blank %}
+          <a href="{{ section.settings.btn_link }}" class="btn btn--outline mt-4">{{ section.settings.btn_text }}</a>
+        {% endif %}
+      </div>
+      <div class="brand-presentation__image fade-up" style="animation-delay: 0.2s;">
+        {% if section.settings.image != blank %}
+          <img src="{{ section.settings.image | img_url: '800x' }}" alt="Lifestyle image" loading="lazy">
+        {% else %}
+          <div class="brand-presentation__placeholder"></div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .brand-presentation {
+    padding: 60px 0;
+    background-color: var(--color-background);
+  }
+  @media screen and (min-width: 1024px) {
+    .brand-presentation { padding: 120px 0; }
+  }
+  .brand-presentation__wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+  @media screen and (min-width: 768px) {
+    .brand-presentation__wrapper {
+      flex-direction: row;
+      align-items: center;
+      gap: 60px;
+    }
+    .brand-presentation__content,
+    .brand-presentation__image {
+      flex: 1;
+    }
+  }
+  .brand-presentation h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+  .brand-presentation__text {
+    font-size: 1rem;
+    color: var(--color-text-secondary);
+    line-height: 1.8;
+  }
+  .mt-4 { margin-top: 30px; }
+  .brand-presentation__image img {
+    width: 100%;
+    aspect-ratio: 4/3;
+    object-fit: cover;
+  }
+  .brand-presentation__placeholder {
+    width: 100%;
+    aspect-ratio: 4/3;
+    background-color: var(--color-border);
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Présentation Marque",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titre"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Texte de présentation"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image Lifestyle (4:3)"
+    },
+    {
+      "type": "text",
+      "id": "btn_text",
+      "label": "Texte Bouton"
+    },
+    {
+      "type": "url",
+      "id": "btn_link",
+      "label": "Lien Bouton"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Présentation Marque",
+      "category": "Texte"
+    }
+  ]
+}
+{% endschema %}

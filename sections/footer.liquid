@@ -1,0 +1,193 @@
+<footer class="footer" data-section-id="{{ section.id }}" data-section-type="footer">
+  <div class="container">
+    <div class="footer__grid fade-up">
+      <!-- Column 1: Brand -->
+      <div class="footer__col">
+        <h3>VELLORA PARIS</h3>
+        <p>L'expression d'un luxe urbain intemporel. Marketplace premium multi-marques.</p>
+        <p>Livraison GRATUITE dans le monde entier.</p>
+      </div>
+
+      <!-- Column 2: Navigation -->
+      <div class="footer__col">
+        <h4>Boutique</h4>
+        <ul>
+          {% for link in linklists[section.settings.footer_menu_1].links %}
+            <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <!-- Column 3: Help -->
+      <div class="footer__col">
+        <h4>Aide & Informations</h4>
+        <ul>
+          {% for link in linklists[section.settings.footer_menu_2].links %}
+            <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <!-- Column 4: Newsletter & Socials -->
+      <div class="footer__col">
+        <h4>Newsletter</h4>
+        <p>Rejoignez la communauté pour des offres exclusives.</p>
+        {% form 'customer', class: 'footer__newsletter-form' %}
+          <input type="hidden" name="contact[tags]" value="newsletter">
+          <input type="email" name="contact[email]" placeholder="Votre email" required>
+          <button type="submit" aria-label="S'inscrire">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+        {% endform %}
+
+        <div class="footer__socials">
+          <a href="{{ settings.social_instagram_link }}" target="_blank" aria-label="Instagram">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </a>
+          <a href="{{ settings.social_tiktok_link }}" target="_blank" aria-label="TikTok">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <p>&copy; {{ 'now' | date: "%Y" }} VELLORA PARIS - Tous droits réservés</p>
+      <div class="footer__payment-icons">
+        {% for type in shop.enabled_payment_types %}
+          {{ type | payment_type_svg_tag: class: 'icon icon--full-color' }}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background-color: var(--color-secondary);
+    color: var(--color-border);
+    padding: 60px 0 20px;
+    margin-top: 40px;
+  }
+  .footer__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    margin-bottom: 60px;
+  }
+  @media screen and (min-width: 768px) {
+    .footer__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media screen and (min-width: 1024px) {
+    .footer__grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .footer h3 {
+    font-size: 1.2rem;
+    color: var(--color-background);
+    margin-bottom: 20px;
+    letter-spacing: 2px;
+  }
+  .footer h4 {
+    font-size: 1rem;
+    color: var(--color-background);
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+  .footer p {
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+    line-height: 1.6;
+  }
+  .footer ul li {
+    margin-bottom: 10px;
+  }
+  .footer ul a {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    transition: color 0.3s;
+  }
+  .footer ul a:hover {
+    color: var(--color-background);
+  }
+  .footer__newsletter-form {
+    display: flex;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 5px;
+    margin-bottom: 20px;
+  }
+  .footer__newsletter-form input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--color-background);
+    outline: none;
+    font-family: var(--font-body);
+  }
+  .footer__newsletter-form input::placeholder {
+    color: var(--color-text-secondary);
+  }
+  .footer__newsletter-form button {
+    color: var(--color-background);
+  }
+  .footer__socials {
+    display: flex;
+    gap: 15px;
+  }
+  .footer__socials a {
+    color: var(--color-background);
+    transition: transform 0.3s;
+  }
+  .footer__socials a:hover {
+    transform: scale(1.1);
+  }
+  .footer__bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 20px;
+    gap: 15px;
+  }
+  @media screen and (min-width: 768px) {
+    .footer__bottom {
+      flex-direction: row;
+      justify-content: space-between;
+    }
+  }
+  .footer__bottom p {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--color-text-secondary);
+  }
+  .footer__payment-icons {
+    display: flex;
+    gap: 10px;
+  }
+  .footer__payment-icons svg {
+    width: 38px;
+    height: 24px;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "footer_menu_1",
+      "label": "Menu 1",
+      "default": "footer"
+    },
+    {
+      "type": "link_list",
+      "id": "footer_menu_2",
+      "label": "Menu 2"
+    }
+  ]
+}
+{% endschema %}

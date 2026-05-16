@@ -1,0 +1,97 @@
+<div class="wishlist-page">
+  <div class="container">
+    <h1 class="page__title fade-up">MES FAVORIS</h1>
+
+    <div id="wishlist-grid" class="product-grid fade-up">
+      <!-- Loaded via JS -->
+      <div class="wishlist-loading">Chargement de vos favoris...</div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .wishlist-page {
+    padding-bottom: 80px;
+  }
+  .page__title {
+    text-align: center;
+    font-size: 2.5rem;
+    margin: 60px 0;
+    letter-spacing: 2px;
+  }
+  .wishlist-loading {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px;
+    color: var(--color-text-secondary);
+  }
+  .wishlist-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 0;
+  }
+  .wishlist-empty h2 {
+    margin-bottom: 20px;
+  }
+  .wishlist-empty a {
+    margin-top: 20px;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    loadWishlistPage();
+  });
+
+  async function loadWishlistPage() {
+    const grid = document.getElementById('wishlist-grid');
+    if (!grid) return;
+
+    const handles = getWishlist(); // from wishlist.js
+
+    if (handles.length === 0) {
+      grid.innerHTML = `
+        <div class="wishlist-empty">
+          <h2>Vous n'avez aucun favori pour le moment.</h2>
+          <a href="/collections/all" class="btn">DÉCOUVRIR LA COLLECTION</a>
+        </div>
+      `;
+      return;
+    }
+
+    grid.innerHTML = ''; // clear loading
+
+    for (const handle of handles) {
+      try {
+        const response = await fetch(`/products/${handle}.js`);
+        if (!response.ok) continue;
+        const product = await response.json();
+
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `
+          <a href="${product.url}" class="product-card__image-wrapper">
+            <img src="${product.featured_image}" alt="${product.title}" class="product-card__image">
+            <button class="product-card__wishlist" onclick="event.preventDefault(); toggleWishlistAndUpdatePage('${product.handle}')" aria-label="Retirer des favoris">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--color-primary)" stroke="var(--color-primary)" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </button>
+            <button class="product-card__quick-view" onclick="event.preventDefault(); openQuickView('${product.handle}')">VUE RAPIDE</button>
+          </a>
+          <div class="product-card__info">
+            ${product.vendor ? `<p class="product-card__vendor">${product.vendor}</p>` : ''}
+            <h3 class="product-card__title"><a href="${product.url}">${product.title}</a></h3>
+            <p class="product-card__price">${(product.price / 100).toFixed(2).replace('.', ',')} €</p>
+          </div>
+        `;
+        grid.appendChild(card);
+      } catch (e) {
+        console.error('Error loading wishlist product:', e);
+      }
+    }
+  }
+
+  function toggleWishlistAndUpdatePage(handle) {
+    toggleWishlist(handle);
+    loadWishlistPage(); // reload grid
+  }
+</script>

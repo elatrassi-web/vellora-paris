@@ -1,0 +1,190 @@
+<div class="featured-collection" data-section-id="{{ section.id }}">
+  <div class="container">
+    <div class="featured-collection__header fade-up">
+      <h2>{{ section.settings.title | default: 'COLLECTION EN VEDETTE' }}</h2>
+      <a href="{{ collections[section.settings.collection].url }}" class="link-underline">VOIR TOUT</a>
+    </div>
+
+    <div class="featured-collection__slider-container fade-up">
+      <div class="featured-collection__track">
+        {% assign collection = collections[section.settings.collection] %}
+        {% for product in collection.products limit: 8 %}
+          <div class="product-card">
+            <a href="{{ product.url }}" class="product-card__image-wrapper">
+              <img src="{{ product.featured_image | img_url: '600x' }}" alt="{{ product.title }}" class="product-card__image">
+              {% if product.images.size > 1 %}
+                <img src="{{ product.images[1] | img_url: '600x' }}" alt="{{ product.title }} back" class="product-card__image-hover">
+              {% endif %}
+
+              {% if product.tags contains 'Nouveau' %}
+                <span class="product-card__badge">NOUVEAU</span>
+              {% endif %}
+
+              <button class="product-card__quick-view" onclick="event.preventDefault(); openQuickView('{{ product.handle }}')">VUE RAPIDE</button>
+            </a>
+            <div class="product-card__info">
+              <h3 class="product-card__title"><a href="{{ product.url }}">{{ product.title }}</a></h3>
+              <p class="product-card__price">{{ product.price | money }}</p>
+            </div>
+          </div>
+        {% else %}
+          {% for i in (1..4) %}
+            <div class="product-card">
+              <div class="product-card__image-wrapper" style="background:var(--color-border); aspect-ratio: 3/4;"></div>
+              <div class="product-card__info">
+                <h3 class="product-card__title">Produit Exemple</h3>
+                <p class="product-card__price">199,00 €</p>
+              </div>
+            </div>
+          {% endfor %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .featured-collection {
+    padding: 60px 0;
+    overflow: hidden;
+  }
+  .featured-collection__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 40px;
+  }
+  .featured-collection h2 {
+    font-size: 1.5rem;
+    margin: 0;
+    letter-spacing: 2px;
+  }
+  .link-underline {
+    font-family: var(--font-heading);
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .featured-collection__slider-container {
+    width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    scroll-snap-type: x mandatory;
+    padding-bottom: 20px;
+  }
+  .featured-collection__slider-container::-webkit-scrollbar {
+    display: none;
+  }
+  .featured-collection__track {
+    display: flex;
+    gap: 20px;
+    width: max-content;
+  }
+  .product-card {
+    width: 280px;
+    scroll-snap-align: start;
+  }
+  @media screen and (min-width: 768px) {
+    .product-card { width: 320px; }
+  }
+  .product-card__image-wrapper {
+    position: relative;
+    display: block;
+    aspect-ratio: 3/4;
+    overflow: hidden;
+    background-color: var(--color-border);
+    margin-bottom: 15px;
+  }
+  .product-card__image,
+  .product-card__image-hover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease, opacity 0.5s ease;
+  }
+  .product-card__image-hover {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+  }
+  .product-card__image-wrapper:hover .product-card__image {
+    opacity: 0;
+  }
+  .product-card__image-wrapper:hover .product-card__image-hover {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  .product-card__badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: var(--color-primary);
+    color: var(--color-background);
+    font-size: 0.7rem;
+    font-weight: bold;
+    padding: 4px 8px;
+    z-index: 2;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+  }
+  .product-card__quick-view {
+    position: absolute;
+    bottom: -50px;
+    left: 0;
+    width: 100%;
+    background-color: rgba(255,255,255,0.9);
+    color: var(--color-primary);
+    padding: 15px 0;
+    font-weight: bold;
+    text-align: center;
+    transition: bottom 0.3s ease;
+    z-index: 2;
+  }
+  .product-card__image-wrapper:hover .product-card__quick-view {
+    bottom: 0;
+  }
+  .product-card__info {
+    text-align: center;
+  }
+  .product-card__title {
+    font-size: 1rem;
+    font-weight: normal;
+    margin-bottom: 5px;
+    font-family: var(--font-body);
+  }
+  .product-card__price {
+    font-weight: bold;
+    font-size: 1.1rem;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Collection Vedette",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titre"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection Vedette",
+      "category": "Collection"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,12 @@
+{
+  "name": "Page Légale",
+  "sections": {
+    "main": {
+      "type": "page-legal",
+      "settings": {}
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

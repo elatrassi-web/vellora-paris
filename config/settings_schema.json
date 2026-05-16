@@ -1,0 +1,71 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Vellora Paris",
+    "theme_author": "Jules",
+    "theme_version": "1.0.0",
+    "theme_support_url": "mailto:contact@velloraparis.fr",
+    "theme_documentation_url": ""
+  },
+  {
+    "name": "Couleurs",
+    "settings": [
+      {
+        "type": "color",
+        "id": "color_primary",
+        "label": "Noir principal",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "color_secondary",
+        "label": "Gris foncé",
+        "default": "#1A1A1A"
+      },
+      {
+        "type": "color",
+        "id": "color_text_secondary",
+        "label": "Gris moyen",
+        "default": "#666666"
+      },
+      {
+        "type": "color",
+        "id": "color_border",
+        "label": "Gris clair",
+        "default": "#E6E6E6"
+      },
+      {
+        "type": "color",
+        "id": "color_background",
+        "label": "Blanc",
+        "default": "#FFFFFF"
+      }
+    ]
+  },
+  {
+    "name": "Typographie",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Google Fonts API est utilisé pour charger Montserrat et Poppins."
+      }
+    ]
+  },
+  {
+    "name": "Checkout",
+    "settings": [
+      {
+        "type": "color",
+        "id": "checkout_accent_color",
+        "label": "Couleur d'accentuation (Boutons)",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "checkout_button_color",
+        "label": "Texte des boutons",
+        "default": "#FFFFFF"
+      }
+    ]
+  }
+]

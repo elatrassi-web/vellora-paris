@@ -1,0 +1,511 @@
+<div class="product-page" data-section-id="{{ section.id }}">
+  <div class="container product__container">
+
+    <!-- Gallery -->
+    <div class="product__gallery">
+      <div class="product__gallery-main" id="product-gallery-main">
+        {% for image in product.images %}
+          <div class="product__gallery-slide {% if forloop.first %}is-active{% endif %}" data-index="{{ forloop.index0 }}">
+            <img src="{{ image | img_url: '1000x' }}" alt="{{ image.alt | escape }}" data-zoom="{{ image | img_url: 'master' }}">
+          </div>
+        {% endfor %}
+        <!-- Navigation Arrows (Mobile) -->
+        <div class="product__gallery-arrows d-lg-none">
+          <button onclick="prevSlide()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+          <button onclick="nextSlide()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+        </div>
+      </div>
+
+      <div class="product__gallery-thumbs d-none d-lg-flex">
+        {% for image in product.images %}
+          <button class="product__thumb {% if forloop.first %}is-active{% endif %}" onclick="goToSlide({{ forloop.index0 }})">
+            <img src="{{ image | img_url: '150x' }}" alt="{{ image.alt | escape }}">
+          </button>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Product Info -->
+    <div class="product__info fade-up">
+      {% if product.vendor %}
+        <p class="product__vendor">{{ product.vendor }}</p>
+      {% endif %}
+
+      <h1 class="product__title">{{ product.title }}</h1>
+      <p class="product__price">{{ product.price | money }}</p>
+
+      <div class="product__auth-badge">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <span>100% Authentique Vérifié</span>
+      </div>
+
+      <div class="product__description-short">
+        {{ product.description | truncatewords: 20 }}
+      </div>
+
+      {%- form 'product', product, id: 'product-form' -%}
+        <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+
+        <!-- Variants (Size/Color) -->
+        {% unless product.has_only_default_variant %}
+          <div class="product__variants">
+            {% for option in product.options_with_values %}
+              <div class="variant-group">
+                <div class="variant-group__header">
+                  <label>{{ option.name }}</label>
+                  {% if option.name == 'Taille' or option.name == 'Size' %}
+                    <button type="button" class="btn-text" onclick="openSizeGuide()">Guide des tailles</button>
+                  {% endif %}
+                </div>
+                <div class="variant-options">
+                  {% for value in option.values %}
+                    <label class="variant-option">
+                      <input type="radio" name="options[{{ option.name | escape }}]" value="{{ value | escape }}" {% if option.selected_value == value %}checked{% endif %} onchange="updateVariant()">
+                      <span>{{ value }}</span>
+                    </label>
+                  {% endfor %}
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% endunless %}
+
+        <!-- Quantity & Add to Cart -->
+        <div class="product__actions">
+          <div class="qty-selector">
+            <button type="button" onclick="updateQty(-1)">-</button>
+            <input type="number" name="quantity" id="Quantity" value="1" min="1">
+            <button type="button" onclick="updateQty(1)">+</button>
+          </div>
+
+          <button type="submit" name="add" class="btn btn--add-to-cart" id="AddToCart" {% unless product.available %}disabled{% endunless %}>
+            {% if product.available %}AJOUTER AU PANIER{% else %}ÉPUISÉ{% endif %}
+          </button>
+        </div>
+
+        {% if product.available %}
+          <button type="button" class="btn btn--buy-now" onclick="buyNow()">ACHETER MAINTENANT</button>
+        {% endif %}
+      {%- endform -%}
+
+      <!-- Trust Icons -->
+      <div class="product__trust">
+        <div class="trust-item">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          <span>Livraison Gratuite Mondiale</span>
+        </div>
+        <div class="trust-item">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          <span>Retours 30 Jours</span>
+        </div>
+      </div>
+
+      <!-- Accordions -->
+      <div class="product__accordions">
+        <div class="accordion">
+          <button class="accordion__title" aria-expanded="false">Description Détaillée <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
+          <div class="accordion__content">{{ product.description }}</div>
+        </div>
+        <div class="accordion">
+          <button class="accordion__title" aria-expanded="false">Garantie Authenticité <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
+          <div class="accordion__content">
+            <p>Tous nos produits sont minutieusement inspectés et certifiés authentiques par nos experts. Un certificat d'authenticité est inclus avec votre commande.</p>
+          </div>
+        </div>
+        <div class="accordion">
+          <button class="accordion__title" aria-expanded="false">Livraison & Retours <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
+          <div class="accordion__content">
+            <p>Livraison express GRATUITE dans le monde entier. Retours acceptés sous 30 jours à condition que le sceau d'authenticité ne soit pas retiré.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .product__container {
+    display: flex;
+    flex-direction: column;
+    padding-top: 40px;
+    padding-bottom: 60px;
+    gap: 40px;
+  }
+  @media screen and (min-width: 1024px) {
+    .product__container {
+      flex-direction: row;
+      gap: 60px;
+      padding-top: 120px; /* Account for sticky header */
+    }
+    .product__gallery, .product__info {
+      width: 50%;
+    }
+  }
+
+  /* Gallery */
+  .product__gallery-main {
+    position: relative;
+    aspect-ratio: 1/1;
+    background: var(--color-border);
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .product__gallery-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .product__gallery-slide.is-active {
+    opacity: 1;
+    z-index: 1;
+  }
+  .product__gallery-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .product__gallery-arrows {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 10px;
+    transform: translateY(-50%);
+    z-index: 2;
+  }
+  .product__gallery-arrows button {
+    background: var(--color-background);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  .product__gallery-thumbs {
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+  }
+  .product__thumb {
+    width: 80px;
+    aspect-ratio: 1/1;
+    border: 2px solid transparent;
+    opacity: 0.6;
+    transition: all 0.2s;
+  }
+  .product__thumb.is-active {
+    border-color: var(--color-primary);
+    opacity: 1;
+  }
+  .product__thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Info */
+  .product__vendor {
+    font-size: 1rem;
+    font-weight: bold;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .product__title {
+    font-size: 2rem;
+    margin-bottom: 15px;
+  }
+  .product__price {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  .product__auth-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #f8f8f8;
+    padding: 10px 15px;
+    border: 1px solid var(--color-border);
+    margin-bottom: 20px;
+    font-weight: bold;
+    font-size: 0.9rem;
+  }
+  .product__description-short {
+    color: var(--color-text-secondary);
+    margin-bottom: 30px;
+    line-height: 1.6;
+  }
+
+  /* Form */
+  .variant-group { margin-bottom: 25px; }
+  .variant-group__header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .variant-group__header label { font-weight: bold; }
+  .btn-text { text-decoration: underline; color: var(--color-text-secondary); }
+
+  .variant-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .variant-option {
+    cursor: pointer;
+  }
+  .variant-option input { display: none; }
+  .variant-option span {
+    display: inline-block;
+    padding: 10px 20px;
+    border: 1px solid var(--color-border);
+    transition: all 0.2s;
+  }
+  .variant-option input:checked + span {
+    background: var(--color-primary);
+    color: var(--color-background);
+    border-color: var(--color-primary);
+  }
+
+  .product__actions {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+  }
+  .qty-selector {
+    display: flex;
+    border: 1px solid var(--color-primary);
+    width: 120px;
+  }
+  .qty-selector button {
+    width: 40px;
+    font-size: 1.2rem;
+  }
+  .qty-selector input {
+    width: 40px;
+    text-align: center;
+    border: none;
+    font-weight: bold;
+    -moz-appearance: textfield;
+  }
+  .qty-selector input::-webkit-outer-spin-button,
+  .qty-selector input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  .btn--add-to-cart {
+    flex: 1;
+  }
+  .btn--buy-now {
+    width: 100%;
+    background: var(--color-secondary);
+    border-color: var(--color-secondary);
+    margin-bottom: 30px;
+  }
+
+  /* Trust */
+  .product__trust {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    padding: 20px 0;
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: 30px;
+  }
+  .trust-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+  }
+
+  /* Accordions */
+  .accordion {
+    border-bottom: 1px solid var(--color-border);
+  }
+  .accordion__title {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+  .accordion__title svg {
+    transition: transform 0.3s;
+  }
+  .accordion__title[aria-expanded="true"] svg {
+    transform: rotate(180deg);
+  }
+  .accordion__content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+  }
+  .accordion__title[aria-expanded="true"] + .accordion__content {
+    max-height: 500px;
+    padding-bottom: 20px;
+  }
+</style>
+
+<script>
+  // Gallery Logic
+  let currentSlide = 0;
+  const slides = document.querySelectorAll('.product__gallery-slide');
+  const thumbs = document.querySelectorAll('.product__thumb');
+
+  function goToSlide(index) {
+    slides[currentSlide].classList.remove('is-active');
+    if(thumbs[currentSlide]) thumbs[currentSlide].classList.remove('is-active');
+
+    currentSlide = index;
+
+    slides[currentSlide].classList.add('is-active');
+    if(thumbs[currentSlide]) thumbs[currentSlide].classList.add('is-active');
+  }
+
+  function nextSlide() {
+    let next = currentSlide + 1;
+    if (next >= slides.length) next = 0;
+    goToSlide(next);
+  }
+
+  function prevSlide() {
+    let prev = currentSlide - 1;
+    if (prev < 0) prev = slides.length - 1;
+    goToSlide(prev);
+  }
+
+  // Swipe support for mobile gallery
+  let touchstartX = 0;
+  let touchendX = 0;
+  const galleryMain = document.getElementById('product-gallery-main');
+
+  if(galleryMain) {
+    galleryMain.addEventListener('touchstart', e => {
+      touchstartX = e.changedTouches[0].screenX;
+    });
+    galleryMain.addEventListener('touchend', e => {
+      touchendX = e.changedTouches[0].screenX;
+      handleSwipe();
+    });
+  }
+
+  function handleSwipe() {
+    if (touchendX < touchstartX - 50) nextSlide();
+    if (touchendX > touchstartX + 50) prevSlide();
+  }
+
+  // Quantity Logic
+  function updateQty(change) {
+    const input = document.getElementById('Quantity');
+    let val = parseInt(input.value) + change;
+    if (val < 1) val = 1;
+    input.value = val;
+  }
+
+  // Accordion Logic
+  document.querySelectorAll('.accordion__title').forEach(button => {
+    button.addEventListener('click', () => {
+      const expanded = button.getAttribute('aria-expanded') === 'true';
+      button.setAttribute('aria-expanded', !expanded);
+    });
+  });
+
+  // Variant Logic
+  const productVariants = {{ product.variants | json }};
+
+  function updateVariant() {
+    const selectedOptions = Array.from(document.querySelectorAll('.variant-group input[type="radio"]:checked')).map(el => el.value);
+
+    // Find matching variant
+    const currentVariant = productVariants.find(variant => {
+      return !variant.options.some((option, index) => {
+        return selectedOptions[index] !== option;
+      });
+    });
+
+    const idInput = document.querySelector('input[name="id"]');
+    const priceDisplay = document.querySelector('.product__price');
+    const addToCartBtn = document.getElementById('AddToCart');
+
+    if (currentVariant) {
+      idInput.value = currentVariant.id;
+      priceDisplay.innerHTML = (currentVariant.price / 100).toFixed(2).replace('.', ',') + ' €';
+
+      // Update URL
+      window.history.replaceState({}, '', `${window.location.pathname}?variant=${currentVariant.id}`);
+
+      if (currentVariant.available) {
+        addToCartBtn.disabled = false;
+        addToCartBtn.textContent = 'AJOUTER AU PANIER';
+      } else {
+        addToCartBtn.disabled = true;
+        addToCartBtn.textContent = 'ÉPUISÉ';
+      }
+    } else {
+      addToCartBtn.disabled = true;
+      addToCartBtn.textContent = 'INDISPONIBLE';
+    }
+  }
+
+  // Buy Now
+  function buyNow() {
+    const form = document.getElementById('product-form');
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = 'return_to';
+    input.value = '/checkout';
+    form.appendChild(input);
+    form.submit();
+  }
+
+  // AJAX Add to Cart
+  document.getElementById('product-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+    const btn = document.getElementById('AddToCart');
+    const originalText = btn.textContent;
+    btn.textContent = 'AJOUT...';
+    btn.disabled = true;
+
+    fetch('/cart/add.js', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      btn.textContent = originalText;
+      btn.disabled = false;
+      updateMiniCartContent();
+      openMiniCart();
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      btn.textContent = originalText;
+      btn.disabled = false;
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Page Produit"
+}
+{% endschema %}
