@@ -1,0 +1,121 @@
+<div class="newsletter-section" data-section-id="{{ section.id }}">
+  <div class="container">
+    <div class="newsletter-section__wrapper fade-up">
+      <div class="newsletter-section__content">
+        <h2>{{ section.settings.title | default: 'NEWSLETTER' }}</h2>
+        <p class="newsletter-section__message">{{ section.settings.message | default: 'Livraison gratuite dans le monde entier' }}</p>
+      </div>
+
+      <div class="newsletter-section__form-container">
+        {% form 'customer', class: 'newsletter-section__form' %}
+          <input type="hidden" name="contact[tags]" value="newsletter">
+
+          {%- if form.posted_successfully? -%}
+            <div class="form-status-list form__message" tabindex="-1" autofocus style="color: green; margin-bottom: 15px; font-weight: bold;">
+              Merci pour votre inscription !
+            </div>
+          {%- elsif form.errors -%}
+            <div class="form__message error" tabindex="-1" autofocus style="color: red; margin-bottom: 15px;">
+              {{ form.errors | default_errors }}
+            </div>
+          {%- endif -%}
+
+          <div class="newsletter-section__input-group">
+            <input
+              type="email"
+              name="contact[email]"
+              placeholder="Votre adresse email"
+              aria-label="Votre adresse email"
+              required
+            >
+            <button type="submit" class="btn" aria-label="S'inscrire">
+              REJOINDRE LA COMMUNAUTÉ
+            </button>
+          </div>
+        {% endform %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .newsletter-section {
+    padding: 80px 0;
+    background-color: #f8f8f8;
+    border-top: 1px solid var(--color-border);
+  }
+  .newsletter-section__wrapper {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .newsletter-section__content h2 {
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+  }
+  .newsletter-section__message {
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .newsletter-section__input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  @media screen and (min-width: 768px) {
+    .newsletter-section__input-group {
+      flex-direction: row;
+      gap: 0;
+    }
+  }
+  .newsletter-section__input-group input {
+    flex: 1;
+    padding: 15px;
+    border: 1px solid var(--color-border);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    outline: none;
+  }
+  .newsletter-section__input-group input:focus {
+    border-color: var(--color-primary);
+  }
+  @media screen and (min-width: 768px) {
+    .newsletter-section__input-group input {
+      border-right: none;
+    }
+  }
+  .newsletter-section__input-group button {
+    white-space: nowrap;
+    min-height: 52px; /* Matches input height */
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Newsletter",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titre",
+      "default": "NEWSLETTER"
+    },
+    {
+      "type": "text",
+      "id": "message",
+      "label": "Message",
+      "default": "Livraison gratuite dans le monde entier"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Newsletter",
+      "category": "Promotional"
+    }
+  ]
+}
+{% endschema %}

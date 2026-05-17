@@ -47,6 +47,9 @@
         "look_3": { "type": "look" }
       },
       "block_order": ["look_1", "look_2", "look_3"]
+    },
+    "newsletter": {
+      "type": "newsletter"
     }
   },
   "order": [
@@ -55,6 +58,7 @@
     "brands",
     "featured",
     "values",
-    "lookbook"
+    "lookbook",
+    "newsletter"
   ]
 }
