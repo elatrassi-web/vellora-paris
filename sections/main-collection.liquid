@@ -15,6 +15,13 @@
   </div>
 
   <div class="container collection__container">
+
+    <!-- Mobile Sticky Filter Button -->
+    <button class="collection__mobile-sticky-btn d-lg-none" onclick="toggleFilters()" aria-label="Ouvrir les filtres">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+      FILTRES & TRI
+    </button>
+
     <!-- Filters Sidebar -->
     <aside class="collection__filters" id="collection-filters">
       <div class="collection__filters-header d-lg-none">
@@ -58,7 +65,6 @@
     <!-- Product Grid -->
     <div class="collection__main">
       <div class="collection__mobile-toolbar d-lg-none">
-        <button class="btn btn--outline" onclick="toggleFilters()">Filtrer & Trier</button>
         <p>{{ collection.products_count }} Produits</p>
       </div>
 
@@ -102,14 +108,15 @@
             <p>Aucun produit ne correspond à votre sélection.</p>
           {% endfor %}
 
-          <!-- Pagination -->
-          {% if paginate.pages > 1 %}
-            <div class="pagination">
-              {{ paginate | default_pagination }}
-            </div>
-          {% endif %}
         {% endpaginate %}
       </div>
+
+      <!-- Infinite Scroll Trigger -->
+      {% if paginate.next %}
+        <div id="infinite-scroll-trigger" class="infinite-scroll-trigger" data-next-url="{{ paginate.next.url }}">
+          <div class="quick-view__loader"><svg class="spinner" viewBox="0 0 50 50"><circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle></svg></div>
+        </div>
+      {% endif %}
     </div>
   </div>
 </div>
@@ -288,9 +295,29 @@
   }
   .collection__mobile-toolbar {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
     margin-bottom: 20px;
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+  }
+  .collection__mobile-sticky-btn {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--color-primary);
+    color: var(--color-background);
+    padding: 12px 24px;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-heading);
+    font-size: 0.9rem;
+    font-weight: bold;
+    z-index: 999;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
   }
   .product-grid {
     display: grid;
@@ -356,21 +383,20 @@
     color: #2e7d32;
   }
 
-  .pagination {
-    margin-top: 50px;
-    text-align: center;
-    grid-column: 1 / -1;
+  .infinite-scroll-trigger {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 40px 0;
   }
-  .pagination span, .pagination a {
-    display: inline-block;
-    padding: 10px 15px;
-    margin: 0 5px;
-    border: 1px solid var(--color-border);
-  }
-  .pagination .current {
-    background-color: var(--color-primary);
-    color: var(--color-background);
-    border-color: var(--color-primary);
+  .quick-view__loader { width: 40px; height: 40px; }
+  .spinner { animation: rotate 2s linear infinite; width: 100%; height: 100%; }
+  .spinner .path { stroke: var(--color-primary); stroke-linecap: round; animation: dash 1.5s ease-in-out infinite; }
+  @keyframes rotate { 100% { transform: rotate(360deg); } }
+  @keyframes dash {
+    0% { stroke-dasharray: 1, 150; stroke-dashoffset: 0; }
+    50% { stroke-dasharray: 90, 150; stroke-dashoffset: -35; }
+    100% { stroke-dasharray: 90, 150; stroke-dashoffset: -124; }
   }
 </style>
 
@@ -400,8 +426,69 @@
         if (typeof checkWishlistStatus === 'function') {
           checkWishlistStatus();
         }
+
+        // Re-init infinite scroll if new trigger exists
+        initInfiniteScroll();
       });
   }
+
+  // Infinite Scroll Logic
+  let isFetching = false;
+
+  function initInfiniteScroll() {
+    const trigger = document.getElementById('infinite-scroll-trigger');
+    if (!trigger) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && !isFetching) {
+        loadMoreProducts(trigger);
+      }
+    }, { rootMargin: '200px' });
+
+    observer.observe(trigger);
+  }
+
+  function loadMoreProducts(trigger) {
+    const nextUrl = trigger.getAttribute('data-next-url');
+    if (!nextUrl) return;
+
+    isFetching = true;
+
+    fetch(nextUrl)
+      .then(response => response.text())
+      .then(html => {
+        const parser = new DOMParser();
+        const newDoc = parser.parseFromString(html, 'text/html');
+
+        // Append new products
+        const newProducts = newDoc.querySelectorAll('#product-grid .product-card');
+        const grid = document.getElementById('product-grid');
+        newProducts.forEach(product => grid.appendChild(product));
+
+        // Update or remove trigger
+        const newTrigger = newDoc.getElementById('infinite-scroll-trigger');
+        if (newTrigger) {
+          trigger.setAttribute('data-next-url', newTrigger.getAttribute('data-next-url'));
+        } else {
+          trigger.remove();
+        }
+
+        // Re-check wishlist status for newly appended products
+        if (typeof checkWishlistStatus === 'function') {
+          checkWishlistStatus();
+        }
+
+        isFetching = false;
+      })
+      .catch(e => {
+        console.error('Error loading more products', e);
+        isFetching = false;
+      });
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    initInfiniteScroll();
+  });
 </script>
 
 {% schema %}
