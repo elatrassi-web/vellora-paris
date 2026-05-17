@@ -35,7 +35,7 @@
         <!-- Sort By -->
         <div class="filter-group">
           <h4>Trier par</h4>
-          <select name="sort_by" id="sort-by" onchange="applyFilters()">
+          <select name="sort_by" id="sort-by">
             <option value="created-descending" {% if collection.sort_by == 'created-descending' %}selected{% endif %}>Nouveautés</option>
             <option value="price-ascending" {% if collection.sort_by == 'price-ascending' %}selected{% endif %}>Prix croissant</option>
             <option value="price-descending" {% if collection.sort_by == 'price-descending' %}selected{% endif %}>Prix décroissant</option>
@@ -54,7 +54,7 @@
                   {% for value in filter.values %}
                     <li>
                       <label class="custom-checkbox">
-                        <input type="checkbox" name="{{ value.param_name }}" value="{{ value.value }}" id="Filter-{{ filter.label }}-{{ forloop.index }}" {% if value.active %}checked{% endif %} onchange="applyFilters()">
+                        <input type="checkbox" name="{{ value.param_name }}" value="{{ value.value }}" id="Filter-{{ filter.label }}-{{ forloop.index }}" {% if value.active %}checked{% endif %}>
                         <span class="checkmark"></span>
                         {{ value.label }} <span class="filter-count">({{ value.count }})</span>
                       </label>
@@ -73,7 +73,6 @@
                       placeholder="0"
                       min="0"
                       max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
-                      onchange="applyFilters()"
                     >
                     <span>-</span>
                     <input name="{{ filter.max_value.param_name }}"
@@ -85,7 +84,6 @@
                       placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
                       min="0"
                       max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
-                      onchange="applyFilters()"
                     >
                   </div>
                 </div>
@@ -141,15 +139,14 @@
             <p>Aucun produit ne correspond à votre sélection.</p>
           {% endfor %}
 
+          <!-- Pagination -->
+          {% if paginate.pages > 1 %}
+            <div class="pagination">
+              {{ paginate | default_pagination }}
+            </div>
+          {% endif %}
         {% endpaginate %}
       </div>
-
-      <!-- Infinite Scroll Trigger -->
-      {% if paginate.next %}
-        <div id="infinite-scroll-trigger" class="infinite-scroll-trigger" data-next-url="{{ paginate.next.url }}">
-          <div class="quick-view__loader"><svg class="spinner" viewBox="0 0 50 50"><circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle></svg></div>
-        </div>
-      {% endif %}
     </div>
   </div>
 </div>
@@ -434,11 +431,22 @@
     color: #2e7d32;
   }
 
-  .infinite-scroll-trigger {
+  .pagination {
+    margin-top: 50px;
+    text-align: center;
+    grid-column: 1 / -1;
     width: 100%;
-    display: flex;
-    justify-content: center;
-    padding: 40px 0;
+  }
+  .pagination span, .pagination a {
+    display: inline-block;
+    padding: 10px 15px;
+    margin: 0 5px;
+    border: 1px solid var(--color-border);
+  }
+  .pagination .current {
+    background-color: var(--color-primary);
+    color: var(--color-background);
+    border-color: var(--color-primary);
   }
   .quick-view__loader { width: 40px; height: 40px; }
   .spinner { animation: rotate 2s linear infinite; width: 100%; height: 100%; }
@@ -483,18 +491,6 @@
           document.getElementById('collection-filters').innerHTML = newFilters.innerHTML;
         }
 
-        // Update Infinite Scroll Trigger
-        const newTrigger = newDoc.getElementById('infinite-scroll-trigger');
-        const oldTrigger = document.getElementById('infinite-scroll-trigger');
-
-        if (newTrigger && oldTrigger) {
-          oldTrigger.setAttribute('data-next-url', newTrigger.getAttribute('data-next-url'));
-        } else if (newTrigger && !oldTrigger) {
-          document.querySelector('.collection__main').appendChild(newTrigger);
-        } else if (!newTrigger && oldTrigger) {
-          oldTrigger.remove();
-        }
-
         // Update URL
         window.history.replaceState({}, '', `${window.location.pathname}?${searchParams.toString()}`);
 
@@ -503,95 +499,24 @@
           checkWishlistStatus();
         }
 
-        // Re-trigger fade up observer on new products
-        observeFadeUps(document.getElementById('product-grid'));
-
-        // Re-init infinite scroll if new trigger exists
-        initInfiniteScroll();
+        // Force fade-up visibility for AJAX injected elements to prevent them from disappearing
+        forceFadeUps(document.getElementById('product-grid'));
       });
   }
 
-  // Fade Up Observer for dynamic content
-  function observeFadeUps(container) {
+  function forceFadeUps(container) {
     if (!container) return;
-    const observer = new IntersectionObserver((entries, obs) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-visible');
-          obs.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.1 });
-
-    container.querySelectorAll('.fade-up:not(.is-visible)').forEach(el => observer.observe(el));
+    container.querySelectorAll('.fade-up').forEach(el => {
+      el.classList.add('is-visible');
+    });
   }
 
-  // Infinite Scroll Logic
-  let isFetching = false;
-  let scrollObserver = null;
-
-  function initInfiniteScroll() {
-    const trigger = document.getElementById('infinite-scroll-trigger');
-
-    // Disconnect old observer to avoid duplicate triggers
-    if (scrollObserver) {
-      scrollObserver.disconnect();
-    }
-
-    if (!trigger) return;
-
-    scrollObserver = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting && !isFetching) {
-        loadMoreProducts(trigger);
-      }
-    }, { rootMargin: '200px' });
-
-    scrollObserver.observe(trigger);
-  }
-
-  function loadMoreProducts(trigger) {
-    const nextUrl = trigger.getAttribute('data-next-url');
-    if (!nextUrl) return;
-
-    isFetching = true;
-
-    fetch(nextUrl)
-      .then(response => response.text())
-      .then(html => {
-        const parser = new DOMParser();
-        const newDoc = parser.parseFromString(html, 'text/html');
-
-        // Append new products
-        const newProducts = newDoc.querySelectorAll('#product-grid .product-card');
-        const grid = document.getElementById('product-grid');
-        newProducts.forEach(product => grid.appendChild(product));
-
-        // Update or remove trigger
-        const newTrigger = newDoc.getElementById('infinite-scroll-trigger');
-        if (newTrigger) {
-          trigger.setAttribute('data-next-url', newTrigger.getAttribute('data-next-url'));
-        } else {
-          trigger.remove();
-        }
-
-        // Re-check wishlist status for newly appended products
-        if (typeof checkWishlistStatus === 'function') {
-          checkWishlistStatus();
-        }
-
-        // Trigger fade up for appended products
-        observeFadeUps(grid);
-
-        isFetching = false;
-      })
-      .catch(e => {
-        console.error('Error loading more products', e);
-        isFetching = false;
-      });
-  }
-
+  // Hook form changes instead of inline onchange for robust filtering
   document.addEventListener('DOMContentLoaded', () => {
-    initInfiniteScroll();
+    const filterForm = document.getElementById('filter-form');
+    if (filterForm) {
+      filterForm.addEventListener('change', applyFilters);
+    }
   });
 </script>
 
