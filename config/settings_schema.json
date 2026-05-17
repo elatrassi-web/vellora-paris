@@ -43,6 +43,26 @@
     ]
   },
   {
+    "name": "Réseaux Sociaux",
+    "settings": [
+      {
+        "type": "text",
+        "id": "social_instagram_link",
+        "label": "Lien Instagram"
+      },
+      {
+        "type": "text",
+        "id": "social_tiktok_link",
+        "label": "Lien TikTok"
+      },
+      {
+        "type": "text",
+        "id": "social_threads_link",
+        "label": "Lien Threads"
+      }
+    ]
+  },
+  {
     "name": "Typographie",
     "settings": [
       {

@@ -28,31 +28,39 @@
         </ul>
       </div>
 
-      <!-- Column 4: Newsletter & Socials -->
+      <!-- Column 4: Reseaux -->
       <div class="footer__col">
-        <h4>Newsletter</h4>
-        <p>Rejoignez la communauté pour des offres exclusives.</p>
-        {% form 'customer', class: 'footer__newsletter-form' %}
-          <input type="hidden" name="contact[tags]" value="newsletter">
-          <input type="email" name="contact[email]" placeholder="Votre email" required>
-          <button type="submit" aria-label="S'inscrire">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-          </button>
-        {% endform %}
-
-        <div class="footer__socials">
-          <a href="{{ settings.social_instagram_link }}" target="_blank" aria-label="Instagram">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
-          </a>
-          <a href="{{ settings.social_tiktok_link }}" target="_blank" aria-label="TikTok">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg>
-          </a>
-        </div>
+        <h4>Réseaux</h4>
+        <ul class="footer__socials-list">
+          <li>
+            <a href="{{ settings.social_instagram_link }}" target="_blank" aria-label="Instagram">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+              Instagram
+            </a>
+          </li>
+          <li>
+            <a href="{{ settings.social_tiktok_link }}" target="_blank" aria-label="TikTok">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg>
+              TikTok
+            </a>
+          </li>
+          <li>
+            <a href="{{ settings.social_threads_link }}" target="_blank" aria-label="Threads">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm-1.5-6h3a1.5 1.5 0 1 0 0-3h-3v3zm-1-5h4.5a3.5 3.5 0 1 1 0 7H9.5v-7z"/></svg>
+              Threads
+            </a>
+          </li>
+        </ul>
       </div>
     </div>
 
     <div class="footer__bottom">
-      <p>&copy; {{ 'now' | date: "%Y" }} VELLORA PARIS - Tous droits réservés</p>
+      <div class="footer__legal-links">
+        <a href="/pages/conditions-generales-de-vente">CGV</a>
+        <a href="/pages/mentions-legales">Mentions légales</a>
+        <a href="/pages/politique-de-retours">Politique de retours</a>
+      </div>
+      <p>Copyright 2026 VELLORA PARIS - Tous droits reserves</p>
       <div class="footer__payment-icons">
         {% for type in shop.enabled_payment_types %}
           {{ type | payment_type_svg_tag: class: 'icon icon--full-color' }}
@@ -137,12 +145,32 @@
     display: flex;
     gap: 15px;
   }
-  .footer__socials a {
-    color: var(--color-background);
-    transition: transform 0.3s;
+  .footer__socials-list li {
+    margin-bottom: 15px;
   }
-  .footer__socials a:hover {
-    transform: scale(1.1);
+  .footer__socials-list a {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--color-text-secondary);
+    transition: color 0.3s;
+  }
+  .footer__socials-list a:hover {
+    color: var(--color-background);
+  }
+  .footer__legal-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+  }
+  .footer__legal-links a {
+    color: var(--color-text-secondary);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+  }
+  .footer__legal-links a:hover {
+    color: var(--color-background);
   }
   .footer__bottom {
     display: flex;
