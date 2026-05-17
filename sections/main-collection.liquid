@@ -483,6 +483,18 @@
           document.getElementById('collection-filters').innerHTML = newFilters.innerHTML;
         }
 
+        // Update Infinite Scroll Trigger
+        const newTrigger = newDoc.getElementById('infinite-scroll-trigger');
+        const oldTrigger = document.getElementById('infinite-scroll-trigger');
+
+        if (newTrigger && oldTrigger) {
+          oldTrigger.setAttribute('data-next-url', newTrigger.getAttribute('data-next-url'));
+        } else if (newTrigger && !oldTrigger) {
+          document.querySelector('.collection__main').appendChild(newTrigger);
+        } else if (!newTrigger && oldTrigger) {
+          oldTrigger.remove();
+        }
+
         // Update URL
         window.history.replaceState({}, '', `${window.location.pathname}?${searchParams.toString()}`);
 
@@ -491,25 +503,50 @@
           checkWishlistStatus();
         }
 
+        // Re-trigger fade up observer on new products
+        observeFadeUps(document.getElementById('product-grid'));
+
         // Re-init infinite scroll if new trigger exists
         initInfiniteScroll();
       });
   }
 
+  // Fade Up Observer for dynamic content
+  function observeFadeUps(container) {
+    if (!container) return;
+    const observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    container.querySelectorAll('.fade-up:not(.is-visible)').forEach(el => observer.observe(el));
+  }
+
   // Infinite Scroll Logic
   let isFetching = false;
+  let scrollObserver = null;
 
   function initInfiniteScroll() {
     const trigger = document.getElementById('infinite-scroll-trigger');
+
+    // Disconnect old observer to avoid duplicate triggers
+    if (scrollObserver) {
+      scrollObserver.disconnect();
+    }
+
     if (!trigger) return;
 
-    const observer = new IntersectionObserver((entries) => {
+    scrollObserver = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting && !isFetching) {
         loadMoreProducts(trigger);
       }
     }, { rootMargin: '200px' });
 
-    observer.observe(trigger);
+    scrollObserver.observe(trigger);
   }
 
   function loadMoreProducts(trigger) {
@@ -541,6 +578,9 @@
         if (typeof checkWishlistStatus === 'function') {
           checkWishlistStatus();
         }
+
+        // Trigger fade up for appended products
+        observeFadeUps(grid);
 
         isFetching = false;
       })
