@@ -511,11 +511,10 @@
     });
   }
 
-  // Hook form changes instead of inline onchange for robust filtering
-  document.addEventListener('DOMContentLoaded', () => {
-    const filterForm = document.getElementById('filter-form');
-    if (filterForm) {
-      filterForm.addEventListener('change', applyFilters);
+  // Hook form changes using event delegation for robust filtering after DOM replacement
+  document.addEventListener('change', (e) => {
+    if (e.target.closest('#filter-form')) {
+      applyFilters();
     }
   });
 </script>

@@ -46,6 +46,12 @@ button {
 }
 
 /* Global Components */
+@media screen and (min-width: 1024px) {
+  .d-lg-none {
+    display: none !important;
+  }
+}
+
 .btn {
   display: inline-flex;
   align-items: center;
