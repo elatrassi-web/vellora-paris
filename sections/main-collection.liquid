@@ -14,7 +14,7 @@
     </div>
   </div>
 
-  <div class="container collection__container">
+  <div class="collection__container-full">
 
     <!-- Mobile Sticky Filter Button -->
     <button class="collection__mobile-sticky-btn d-lg-none" onclick="toggleFilters()" aria-label="Ouvrir les filtres">
@@ -36,9 +36,10 @@
         <div class="filter-group">
           <h4>Trier par</h4>
           <select name="sort_by" id="sort-by" onchange="applyFilters()">
-            {% for option in collection.sort_options %}
-              <option value="{{ option.value }}" {% if option.value == collection.sort_by %}selected{% endif %}>{{ option.name }}</option>
-            {% endfor %}
+            <option value="created-descending" {% if collection.sort_by == 'created-descending' %}selected{% endif %}>Nouveautés</option>
+            <option value="price-ascending" {% if collection.sort_by == 'price-ascending' %}selected{% endif %}>Prix croissant</option>
+            <option value="price-descending" {% if collection.sort_by == 'price-descending' %}selected{% endif %}>Prix décroissant</option>
+            <option value="best-selling" {% if collection.sort_by == 'best-selling' %}selected{% endif %}>Bestsellers</option>
           </select>
         </div>
 
@@ -46,17 +47,49 @@
         {% for filter in collection.filters %}
           <div class="filter-group">
             <h4>{{ filter.label }}</h4>
-            <ul class="filter-list">
-              {% for value in filter.values %}
-                <li>
-                  <label class="custom-checkbox">
-                    <input type="checkbox" name="{{ value.param_name }}" value="{{ value.value }}" id="Filter-{{ filter.label }}-{{ forloop.index }}" {% if value.active %}checked{% endif %} onchange="applyFilters()">
-                    <span class="checkmark"></span>
-                    {{ value.label }} <span class="filter-count">({{ value.count }})</span>
-                  </label>
-                </li>
-              {% endfor %}
-            </ul>
+
+            {% case filter.type %}
+              {% when 'list' %}
+                <ul class="filter-list">
+                  {% for value in filter.values %}
+                    <li>
+                      <label class="custom-checkbox">
+                        <input type="checkbox" name="{{ value.param_name }}" value="{{ value.value }}" id="Filter-{{ filter.label }}-{{ forloop.index }}" {% if value.active %}checked{% endif %} onchange="applyFilters()">
+                        <span class="checkmark"></span>
+                        {{ value.label }} <span class="filter-count">({{ value.count }})</span>
+                      </label>
+                    </li>
+                  {% endfor %}
+                </ul>
+              {% when 'price_range' %}
+                <div class="filter-price">
+                  <div class="filter-price__inputs">
+                    <input name="{{ filter.min_value.param_name }}"
+                      id="Filter-{{ filter.label }}-min"
+                      {% if filter.min_value.value -%}
+                        value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"
+                      {%- endif %}
+                      type="number"
+                      placeholder="0"
+                      min="0"
+                      max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                      onchange="applyFilters()"
+                    >
+                    <span>-</span>
+                    <input name="{{ filter.max_value.param_name }}"
+                      id="Filter-{{ filter.label }}-max"
+                      {% if filter.max_value.value -%}
+                        value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"
+                      {%- endif %}
+                      type="number"
+                      placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                      min="0"
+                      max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                      onchange="applyFilters()"
+                    >
+                  </div>
+                </div>
+            {% endcase %}
           </div>
         {% endfor %}
       </form>
@@ -166,13 +199,20 @@
     letter-spacing: 2px;
   }
 
-  .collection__container {
+  .collection__container-full {
     display: flex;
     flex-direction: column;
     gap: 40px;
+    padding: 0 20px;
+    width: 100%;
+  }
+  @media screen and (min-width: 768px) {
+    .collection__container-full {
+      padding: 0 40px;
+    }
   }
   @media screen and (min-width: 1024px) {
-    .collection__container {
+    .collection__container-full {
       flex-direction: row;
       align-items: flex-start;
     }
@@ -287,6 +327,17 @@
     color: var(--color-text-secondary);
     font-size: 0.8rem;
     margin-left: 5px;
+  }
+  .filter-price__inputs {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .filter-price__inputs input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--color-border);
+    font-family: var(--font-body);
   }
 
   /* Main & Grid */
@@ -417,7 +468,20 @@
         const parser = new DOMParser();
         const newDoc = parser.parseFromString(html, 'text/html');
         const newGrid = newDoc.getElementById('product-grid');
-        document.getElementById('product-grid').innerHTML = newGrid.innerHTML;
+        const newToolbar = newDoc.querySelector('.collection__mobile-toolbar');
+
+        if (newGrid) {
+          document.getElementById('product-grid').innerHTML = newGrid.innerHTML;
+        }
+        if (newToolbar) {
+          document.querySelector('.collection__mobile-toolbar').innerHTML = newToolbar.innerHTML;
+        }
+
+        // Also update filter sidebar to reflect new counts
+        const newFilters = newDoc.getElementById('collection-filters');
+        if (newFilters) {
+          document.getElementById('collection-filters').innerHTML = newFilters.innerHTML;
+        }
 
         // Update URL
         window.history.replaceState({}, '', `${window.location.pathname}?${searchParams.toString()}`);
