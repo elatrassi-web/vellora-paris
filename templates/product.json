@@ -13,10 +13,14 @@
     },
     "authenticity": {
       "type": "authenticity-guarantee"
+    },
+    "reviews": {
+      "type": "product-reviews"
     }
   },
   "order": [
     "main",
+    "reviews",
     "authenticity",
     "related"
   ]

@@ -5,7 +5,7 @@
     <div class="product__gallery">
       <div class="product__gallery-main" id="product-gallery-main">
         {% for image in product.images %}
-          <div class="product__gallery-slide {% if forloop.first %}is-active{% endif %}" data-index="{{ forloop.index0 }}">
+          <div class="product__gallery-slide {% if forloop.first %}is-active{% endif %}" data-index="{{ forloop.index0 }}" onclick="openImageZoom('{{ image | img_url: 'master' }}')" style="cursor: zoom-in;">
             <img src="{{ image | img_url: '1000x' }}" alt="{{ image.alt | escape }}" data-zoom="{{ image | img_url: 'master' }}">
           </div>
         {% endfor %}
@@ -27,13 +27,15 @@
 
     <!-- Product Info -->
     <div class="product__info fade-up">
-      {% if product.vendor %}
-        <p class="product__vendor">{{ product.vendor }}</p>
-      {% endif %}
+      <div class="product__vendor-auth-wrapper">
+        {% if product.vendor %}
+          <p class="product__vendor">{{ product.vendor }}</p>
+        {% endif %}
 
-      <div class="product__auth-badge">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2e7d32" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-        <span>100% AUTHENTIQUE VÉRIFIÉ</span>
+        <div class="product__auth-badge">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2e7d32" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <span>100% AUTHENTIQUE VÉRIFIÉ</span>
+        </div>
       </div>
 
       <h1 class="product__title">{{ product.title }}</h1>
@@ -102,6 +104,14 @@
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
           <span>Retours 30 Jours</span>
         </div>
+        <div class="trust-item">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <span>Paiement Sécurisé</span>
+        </div>
+        <div class="trust-item">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2e7d32" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <span style="color:#2e7d32; font-weight:bold;">Produit Authentique Certifié</span>
+        </div>
       </div>
 
       <!-- Accordions -->
@@ -109,6 +119,18 @@
         <div class="accordion">
           <button class="accordion__title" aria-expanded="false">Description Détaillée <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
           <div class="accordion__content">{{ product.description }}</div>
+        </div>
+        <div class="accordion">
+          <button class="accordion__title" aria-expanded="false">Composition et Entretien <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
+          <div class="accordion__content">
+            <p>Veuillez consulter l'étiquette du produit pour les instructions détaillées de composition et d'entretien spécifiques à cet article.</p>
+          </div>
+        </div>
+        <div class="accordion">
+          <button class="accordion__title" aria-expanded="false">Guide des tailles <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
+          <div class="accordion__content">
+            <p>Nos tailles sont standards. Pour plus de précision, consultez le bouton "Guide des tailles" ci-dessus ou contactez notre service client.</p>
+          </div>
         </div>
         <div class="accordion">
           <button class="accordion__title" aria-expanded="false">Garantie Authenticité <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
@@ -218,19 +240,28 @@
   }
 
   /* Info */
+  .product__vendor-auth-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+  }
   .product__vendor {
     font-size: 1rem;
     font-weight: bold;
     color: var(--color-text-secondary);
     text-transform: uppercase;
-    margin-bottom: 10px;
+    margin-bottom: 0;
   }
   .product__title {
-    font-size: 2rem;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 32px;
     margin-bottom: 15px;
   }
   .product__price {
-    font-size: 1.5rem;
+    font-size: 28px;
+    color: var(--color-primary);
     font-weight: bold;
     margin-bottom: 20px;
   }
@@ -241,7 +272,7 @@
     background: rgba(46, 125, 50, 0.1);
     color: #2e7d32;
     padding: 8px 12px;
-    margin-bottom: 20px;
+    margin-bottom: 0;
     font-weight: bold;
     font-size: 0.8rem;
     letter-spacing: 1px;
@@ -324,9 +355,14 @@
   }
   .btn--buy-now {
     width: 100%;
-    background: var(--color-secondary);
-    border-color: var(--color-secondary);
+    background: transparent;
+    border-color: var(--color-primary);
+    color: var(--color-primary);
     margin-bottom: 30px;
+  }
+  .btn--buy-now:hover {
+    background: var(--color-primary);
+    color: var(--color-background);
   }
 
   /* Trust */
