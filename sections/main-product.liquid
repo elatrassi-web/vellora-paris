@@ -483,6 +483,8 @@
   const productVariants = {{ product.variants | json }};
 
   function updateVariant() {
+    if (!productVariants || productVariants.length === 0) return;
+
     const selectedOptions = Array.from(document.querySelectorAll('.variant-group input[type="radio"]:checked')).map(el => el.value);
 
     // Find matching variant
@@ -557,6 +559,7 @@
 
 {% schema %}
 {
-  "name": "Page Produit"
+  "name": "Page Produit",
+  "settings": []
 }
 {% endschema %}
