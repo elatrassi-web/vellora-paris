@@ -1,0 +1,61 @@
+<div class="modal" id="size-guide-modal">
+  <div class="modal__overlay" onclick="closeSizeGuide()"></div>
+  <div class="modal__content" style="max-width: 600px;">
+    <button class="modal__close" onclick="closeSizeGuide()">&times;</button>
+    <h2 style="margin-bottom: 20px; text-transform: uppercase;">Guide des tailles</h2>
+
+    <div style="overflow-x: auto;">
+      <table style="width: 100%; border-collapse: collapse; text-align: center;">
+        <thead>
+          <tr style="background: var(--color-border);">
+            <th style="padding: 10px; border: 1px solid var(--color-text-secondary);">Taille</th>
+            <th style="padding: 10px; border: 1px solid var(--color-text-secondary);">Poitrine (cm)</th>
+            <th style="padding: 10px; border: 1px solid var(--color-text-secondary);">Taille (cm)</th>
+            <th style="padding: 10px; border: 1px solid var(--color-text-secondary);">Hanches (cm)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="padding: 10px; border: 1px solid var(--color-border);">S</td>
+            <td style="padding: 10px; border: 1px solid var(--color-border);">86-91</td>
+            <td style="padding: 10px; border: 1px solid var(--color-border);">71-76</td>
+            <td style="padding: 10px; border: 1px solid var(--color-border);">89-94</td>
+          </tr>
+          <tr>
+            <td style="padding: 10px; border: 1px solid var(--color-border);">M</td>
+            <td style="padding: 10px; border: 1px solid var(--color-border);">96-101</td>
+            <td style="padding: 10px; border: 1px solid var(--color-border);">81-86</td>
+            <td style="padding: 10px; border: 1px solid var(--color-border);">99-104</td>
+          </tr>
+          <tr>
+            <td style="padding: 10px; border: 1px solid var(--color-border);">L</td>
+            <td style="padding: 10px; border: 1px solid var(--color-border);">106-111</td>
+            <td style="padding: 10px; border: 1px solid var(--color-border);">91-96</td>
+            <td style="padding: 10px; border: 1px solid var(--color-border);">109-114</td>
+          </tr>
+          <tr>
+            <td style="padding: 10px; border: 1px solid var(--color-border);">XL</td>
+            <td style="padding: 10px; border: 1px solid var(--color-border);">116-121</td>
+            <td style="padding: 10px; border: 1px solid var(--color-border);">101-106</td>
+            <td style="padding: 10px; border: 1px solid var(--color-border);">119-124</td>
+          </tr>
+          <tr>
+            <td style="padding: 10px; border: 1px solid var(--color-border);">XXL</td>
+            <td style="padding: 10px; border: 1px solid var(--color-border);">127-132</td>
+            <td style="padding: 10px; border: 1px solid var(--color-border);">111-116</td>
+            <td style="padding: 10px; border: 1px solid var(--color-border);">129-134</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openSizeGuide() {
+    document.getElementById('size-guide-modal').classList.add('is-active');
+  }
+  function closeSizeGuide() {
+    document.getElementById('size-guide-modal').classList.remove('is-active');
+  }
+</script>
