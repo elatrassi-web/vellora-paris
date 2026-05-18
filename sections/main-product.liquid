@@ -261,7 +261,7 @@
   }
   .product__price {
     font-size: 28px;
-    color: var(--color-primary);
+    color: #000000;
     font-weight: bold;
     margin-bottom: 20px;
   }
@@ -352,13 +352,22 @@
   }
   .btn--add-to-cart {
     flex: 1;
+    background-color: var(--color-primary);
+    color: var(--color-background);
+    border: 1px solid var(--color-primary);
+    transition: all 0.3s ease;
+  }
+  .btn--add-to-cart:hover {
+    background-color: var(--color-background);
+    color: var(--color-primary);
   }
   .btn--buy-now {
     width: 100%;
-    background: transparent;
+    background: var(--color-background);
     border-color: var(--color-primary);
     color: var(--color-primary);
     margin-bottom: 30px;
+    transition: all 0.3s ease;
   }
   .btn--buy-now:hover {
     background: var(--color-primary);
