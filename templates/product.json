@@ -20,8 +20,8 @@
   },
   "order": [
     "main",
+    "related",
     "reviews",
-    "authenticity",
-    "related"
+    "authenticity"
   ]
 }
