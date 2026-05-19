@@ -2,18 +2,29 @@
   {% if section.settings.hero_image != blank %}
     <div class="page-hero" style="background-image: url('{{ section.settings.hero_image | img_url: '1920x' }}');">
       <div class="page-hero__overlay"></div>
-      <h1 class="page-hero__title fade-up">{{ page.title }}</h1>
+      <h1 class="page-hero__title fade-up">NOTRE HISTOIRE</h1>
     </div>
   {% else %}
     <div class="container">
-      <h1 class="page__title fade-up">{{ page.title }}</h1>
+      <h1 class="page__title fade-up">NOTRE HISTOIRE</h1>
     </div>
   {% endif %}
 
   <div class="container page-about__content">
     <div class="page-about__grid">
       <div class="page-about__text fade-up">
-        {{ page.content }}
+        {% if page.content != blank %}
+          {{ page.content }}
+        {% else %}
+          <h2>NOTRE MISSION</h2>
+          <p>Chez VELLORA PARIS, notre mission est de redéfinir le streetwear en combinant une esthétique premium et minimaliste avec une garantie d'authenticité absolue. Chaque pièce est sélectionnée avec soin pour offrir l'excellence à notre communauté.</p>
+
+          <h2>NOTRE VISION</h2>
+          <p>Nous croyons en une mode urbaine où le luxe rencontre l'authenticité. Notre vision est de devenir la destination de confiance pour les passionnés de streetwear qui recherchent des pièces exclusives sans compromis sur la qualité.</p>
+
+          <h2>NOS VALEURS</h2>
+          <p>L'excellence, la transparence et la passion guident chacune de nos actions. De la vérification de nos produits à notre service client, nous nous engageons à maintenir les standards les plus élevés.</p>
+        {% endif %}
       </div>
 
       {% if section.settings.side_image != blank %}
