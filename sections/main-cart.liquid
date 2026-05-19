@@ -67,6 +67,11 @@
 
             <p class="cart__tax-note">Les taxes et codes promotionnels seront calculés à l'étape de paiement.</p>
 
+            <div class="cart__summary-row cart__summary-total">
+              <span>Total</span>
+              <span class="cart__total">{{ cart.total_price | money }}</span>
+            </div>
+
             <button type="submit" name="checkout" class="btn btn--checkout">PASSER LA COMMANDE</button>
 
             <div class="cart__trust">
@@ -235,6 +240,11 @@
     font-size: 1.2rem;
     font-weight: bold;
     margin-bottom: 20px;
+  }
+  .cart__summary-total {
+    border-top: 1px solid var(--color-border);
+    padding-top: 20px;
+    font-size: 1.4rem;
   }
   .cart__summary-shipping {
     display: flex;
