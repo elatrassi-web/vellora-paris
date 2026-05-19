@@ -316,8 +316,12 @@
   }
   .variant-option input { display: none; }
   .variant-option span {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     padding: 10px 20px;
+    min-height: 44px;
+    min-width: 44px;
     border: 1px solid var(--color-border);
     transition: all 0.2s;
   }
@@ -335,14 +339,16 @@
   .qty-selector {
     display: flex;
     border: 1px solid var(--color-primary);
-    width: 120px;
+    width: 132px;
   }
   .qty-selector button {
-    width: 40px;
+    width: 44px;
+    height: 44px;
     font-size: 1.2rem;
   }
   .qty-selector input {
-    width: 40px;
+    width: 44px;
+    height: 44px;
     text-align: center;
     border: none;
     font-weight: bold;
