@@ -104,9 +104,9 @@
           {% for product in collection.products %}
             <div class="product-card fade-up" style="animation-delay: {{ forloop.index | modulo: 4 | times: 0.1 }}s">
               <a href="{{ product.url }}" class="product-card__image-wrapper">
-                <img src="{{ product.featured_image | img_url: '600x' }}" alt="{{ product.title }}" class="product-card__image">
+                <img src="{{ product.featured_image | img_url: '600x' }}" alt="{{ product.title }}" class="product-card__image" loading="lazy">
                 {% if product.images.size > 1 %}
-                  <img src="{{ product.images[1] | img_url: '600x' }}" alt="{{ product.title }} back" class="product-card__image-hover">
+                  <img src="{{ product.images[1] | img_url: '600x' }}" alt="{{ product.title }} back" class="product-card__image-hover" loading="lazy">
                 {% endif %}
 
                 {% if product.tags contains 'Edition Limitée' %}

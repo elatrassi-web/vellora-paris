@@ -19,7 +19,7 @@
       <div class="product__gallery-thumbs d-none d-lg-flex">
         {% for image in product.images %}
           <button class="product__thumb {% if forloop.first %}is-active{% endif %}" onclick="goToSlide({{ forloop.index0 }})">
-            <img src="{{ image | img_url: '150x' }}" alt="{{ image.alt | escape }}">
+            <img src="{{ image | img_url: '150x' }}" alt="{{ image.alt | escape }}" loading="lazy">
           </button>
         {% endfor %}
       </div>
