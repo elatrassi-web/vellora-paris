@@ -21,7 +21,7 @@
               <div class="cart-item">
                 <div class="cart-item__product">
                   <a href="{{ item.url }}" class="cart-item__image">
-                    <img src="{{ item.image | img_url: '200x' }}" alt="{{ item.title }}">
+                    <img src="{{ item.image | img_url: '200x' }}" alt="{{ item.title }}" loading="lazy">
                   </a>
                   <div class="cart-item__details">
                     {% if item.vendor %}
@@ -66,6 +66,11 @@
             </div>
 
             <p class="cart__tax-note">Les taxes et codes promotionnels seront calculés à l'étape de paiement.</p>
+
+            <div class="cart__summary-row cart__summary-total">
+              <span>Total</span>
+              <span class="cart__total">{{ cart.total_price | money }}</span>
+            </div>
 
             <button type="submit" name="checkout" class="btn btn--checkout">PASSER LA COMMANDE</button>
 
@@ -193,14 +198,16 @@
   .qty-selector {
     display: flex;
     border: 1px solid var(--color-primary);
-    width: 100px;
+    width: 132px;
   }
   .qty-selector button {
-    width: 30px;
+    width: 44px;
+    height: 44px;
     font-size: 1.2rem;
   }
   .qty-selector input {
-    width: 40px;
+    width: 44px;
+    height: 44px;
     text-align: center;
     border: none;
     font-weight: bold;
@@ -235,6 +242,11 @@
     font-size: 1.2rem;
     font-weight: bold;
     margin-bottom: 20px;
+  }
+  .cart__summary-total {
+    border-top: 1px solid var(--color-border);
+    padding-top: 20px;
+    font-size: 1.4rem;
   }
   .cart__summary-shipping {
     display: flex;
@@ -305,6 +317,7 @@
 
 {% schema %}
 {
-  "name": "Page Panier"
+  "name": "Page Panier",
+  "settings": []
 }
 {% endschema %}

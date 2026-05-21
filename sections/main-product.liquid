@@ -19,7 +19,7 @@
       <div class="product__gallery-thumbs d-none d-lg-flex">
         {% for image in product.images %}
           <button class="product__thumb {% if forloop.first %}is-active{% endif %}" onclick="goToSlide({{ forloop.index0 }})">
-            <img src="{{ image | img_url: '150x' }}" alt="{{ image.alt | escape }}">
+            <img src="{{ image | img_url: '150x' }}" alt="{{ image.alt | escape }}" loading="lazy">
           </button>
         {% endfor %}
       </div>
@@ -114,35 +114,38 @@
         </div>
       </div>
 
-      <!-- Accordions -->
-      <div class="product__accordions">
-        <div class="accordion">
-          <button class="accordion__title" aria-expanded="false">Description Détaillée <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
-          <div class="accordion__content">{{ product.description }}</div>
+    </div>
+  </div>
+
+  <!-- Accordions (Full Width) -->
+  <div class="container">
+    <div class="product__accordions-fullwidth fade-up">
+      <div class="accordion">
+        <button class="accordion__title" aria-expanded="false">Description Détaillée <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="accordion__content">{{ product.description }}</div>
+      </div>
+      <div class="accordion">
+        <button class="accordion__title" aria-expanded="false">Composition et Entretien <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="accordion__content">
+          <p>Veuillez consulter l'étiquette du produit pour les instructions détaillées de composition et d'entretien spécifiques à cet article.</p>
         </div>
-        <div class="accordion">
-          <button class="accordion__title" aria-expanded="false">Composition et Entretien <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
-          <div class="accordion__content">
-            <p>Veuillez consulter l'étiquette du produit pour les instructions détaillées de composition et d'entretien spécifiques à cet article.</p>
-          </div>
+      </div>
+      <div class="accordion">
+        <button class="accordion__title" aria-expanded="false">Guide des tailles <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="accordion__content">
+          <p>Nos tailles sont standards. Pour plus de précision, consultez le bouton "Guide des tailles" ci-dessus ou contactez notre service client.</p>
         </div>
-        <div class="accordion">
-          <button class="accordion__title" aria-expanded="false">Guide des tailles <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
-          <div class="accordion__content">
-            <p>Nos tailles sont standards. Pour plus de précision, consultez le bouton "Guide des tailles" ci-dessus ou contactez notre service client.</p>
-          </div>
+      </div>
+      <div class="accordion">
+        <button class="accordion__title" aria-expanded="false">Garantie Authenticité <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="accordion__content">
+          <p>Tous nos produits sont minutieusement inspectés et certifiés authentiques par nos experts. Un certificat d'authenticité est inclus avec votre commande.</p>
         </div>
-        <div class="accordion">
-          <button class="accordion__title" aria-expanded="false">Garantie Authenticité <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
-          <div class="accordion__content">
-            <p>Tous nos produits sont minutieusement inspectés et certifiés authentiques par nos experts. Un certificat d'authenticité est inclus avec votre commande.</p>
-          </div>
-        </div>
-        <div class="accordion">
-          <button class="accordion__title" aria-expanded="false">Livraison & Retours <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
-          <div class="accordion__content">
-            <p>Livraison express GRATUITE dans le monde entier. Retours acceptés sous 30 jours à condition que le sceau d'authenticité ne soit pas retiré.</p>
-          </div>
+      </div>
+      <div class="accordion">
+        <button class="accordion__title" aria-expanded="false">Livraison & Retours <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="accordion__content">
+          <p>Livraison express GRATUITE dans le monde entier. Retours acceptés sous 30 jours à condition que le sceau d'authenticité ne soit pas retiré.</p>
         </div>
       </div>
     </div>
@@ -261,7 +264,7 @@
   }
   .product__price {
     font-size: 28px;
-    color: var(--color-primary);
+    color: #000000;
     font-weight: bold;
     margin-bottom: 20px;
   }
@@ -313,8 +316,12 @@
   }
   .variant-option input { display: none; }
   .variant-option span {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     padding: 10px 20px;
+    min-height: 44px;
+    min-width: 44px;
     border: 1px solid var(--color-border);
     transition: all 0.2s;
   }
@@ -332,14 +339,16 @@
   .qty-selector {
     display: flex;
     border: 1px solid var(--color-primary);
-    width: 120px;
+    width: 132px;
   }
   .qty-selector button {
-    width: 40px;
+    width: 44px;
+    height: 44px;
     font-size: 1.2rem;
   }
   .qty-selector input {
-    width: 40px;
+    width: 44px;
+    height: 44px;
     text-align: center;
     border: none;
     font-weight: bold;
@@ -352,13 +361,22 @@
   }
   .btn--add-to-cart {
     flex: 1;
+    background-color: var(--color-primary);
+    color: var(--color-background);
+    border: 1px solid var(--color-primary);
+    transition: all 0.3s ease;
+  }
+  .btn--add-to-cart:hover {
+    background-color: var(--color-background);
+    color: var(--color-primary);
   }
   .btn--buy-now {
     width: 100%;
-    background: transparent;
+    background: var(--color-background);
     border-color: var(--color-primary);
     color: var(--color-primary);
     margin-bottom: 30px;
+    transition: all 0.3s ease;
   }
   .btn--buy-now:hover {
     background: var(--color-primary);
@@ -384,6 +402,10 @@
   }
 
   /* Accordions */
+  .product__accordions-fullwidth {
+    margin-top: 40px;
+    border-top: 1px solid var(--color-border);
+  }
   .accordion {
     border-bottom: 1px solid var(--color-border);
   }
@@ -483,6 +505,8 @@
   const productVariants = {{ product.variants | json }};
 
   function updateVariant() {
+    if (!productVariants || productVariants.length === 0) return;
+
     const selectedOptions = Array.from(document.querySelectorAll('.variant-group input[type="radio"]:checked')).map(el => el.value);
 
     // Find matching variant
@@ -557,6 +581,7 @@
 
 {% schema %}
 {
-  "name": "Page Produit"
+  "name": "Page Produit",
+  "settings": []
 }
 {% endschema %}

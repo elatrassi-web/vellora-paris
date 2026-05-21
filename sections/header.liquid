@@ -6,7 +6,7 @@
   </div>
 
   <div class="header__main">
-    <div class="container header__container">
+    <div class="header__container-full header__container">
       <!-- Mobile Menu Toggle -->
       <button class="header__icon header__icon--menu d-lg-none" aria-label="Menu" onclick="toggleMobileMenu()">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
@@ -42,15 +42,9 @@
       <!-- Logo -->
       <a href="/" class="header__logo">
         {% if section.settings.logo %}
-          <img src="{{ section.settings.logo | img_url: 'master' }}" alt="{{ shop.name }}">
+          <img src="{{ section.settings.logo | img_url: 'master' }}" alt="{{ shop.name }}" class="header__logo-image">
         {% else %}
-          <div class="header__logo-svg">
-            <svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M25 15 L45 85 L55 85 L60 65 L48 20 L45 15 Z" fill="var(--color-primary)"/>
-              <path d="M75 15 L50 95 L40 95 L15 15 L25 15 L45 80 L65 15 Z" fill="var(--color-primary)"/>
-            </svg>
-          </div>
-          <h2>VELLORA <br><span>PARIS</span></h2>
+          <img src="{{ 'logo.jpeg' | asset_url }}" alt="VELLORA PARIS" class="header__logo-image">
         {% endif %}
       </a>
 
@@ -112,9 +106,20 @@
         </ul>
       </nav>
 
+      <!-- Smart Search (Desktop Always Visible) -->
+      <div class="header__search-wrapper d-none d-lg-block">
+        <form action="/search" method="get" class="header__search-form">
+          <button type="submit" aria-label="Rechercher">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </button>
+          <input type="text" name="q" placeholder="Rechercher..." autocomplete="off" id="search-input-desktop">
+        </form>
+        <div class="header__search-results" id="search-results-desktop"></div>
+      </div>
+
       <!-- Icons -->
       <div class="header__icons">
-        <button class="header__icon" aria-label="Recherche" onclick="toggleSearch()">
+        <button class="header__icon d-lg-none" aria-label="Recherche" onclick="toggleSearch()">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         </button>
         <a href="{{ routes.account_url }}" class="header__icon" aria-label="Compte">
@@ -133,15 +138,15 @@
   </div>
 
   <!-- Smart Search (Hidden by default) -->
-  <div id="smart-search" class="smart-search" aria-hidden="true">
+  <div id="smart-search" class="smart-search d-lg-none" aria-hidden="true">
     <div class="container">
       <form action="/search" method="get" class="smart-search__form">
-        <input type="text" name="q" placeholder="Rechercher des marques, vêtements..." autocomplete="off" id="search-input">
+        <input type="text" name="q" placeholder="Rechercher des marques, vêtements..." autocomplete="off" id="search-input-mobile">
         <button type="submit" aria-label="Rechercher">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         </button>
       </form>
-      <div class="smart-search__results" id="search-results"></div>
+      <div class="smart-search__results" id="search-results-mobile"></div>
     </div>
     <button class="smart-search__close" onclick="toggleSearch()" aria-label="Fermer la recherche">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
@@ -162,6 +167,17 @@
   .header.is-sticky {
     box-shadow: 0 2px 10px rgba(0,0,0,0.05);
   }
+  .header__container-full {
+    width: 100%;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  @media screen and (min-width: 1024px) {
+    .header__container-full {
+      padding-left: 40px;
+      padding-right: 40px;
+    }
+  }
   .header__top-bar {
     background-color: var(--color-primary);
     color: var(--color-background);
@@ -181,28 +197,18 @@
   .header.is-sticky .header__container {
     height: 60px;
   }
-  .header__logo {
+    .header__logo {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    text-align: center;
+    justify-content: center;
   }
-  .header__logo-svg {
-    margin-bottom: 5px;
+  .header__logo-image {
+    max-height: 50px;
+    width: auto;
+    object-fit: contain;
   }
-  .header__logo h2 {
-    margin: 0;
-    font-size: 1.2rem;
-    line-height: 1.1;
-    letter-spacing: 6px;
-    font-weight: 500;
-  }
-  .header__logo span {
-    font-size: 0.75rem;
-    letter-spacing: 8px;
-    font-weight: 300;
-    display: block;
-    margin-top: 2px;
+  .header.is-sticky .header__logo-image {
+    max-height: 40px;
   }
   .header__menu {
     display: flex;
@@ -314,6 +320,78 @@
   }
   .header__mega-menu-list ul a:hover {
     color: var(--color-primary);
+  }
+    .header__search-wrapper {
+    position: relative;
+    flex: 1;
+    max-width: 300px;
+    margin: 0 20px;
+  }
+  .header__search-form {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 5px;
+  }
+  .header__search-form input {
+    border: none;
+    outline: none;
+    width: 100%;
+    padding: 5px 10px;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    background: transparent;
+  }
+  .header__search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: var(--color-background);
+    border: 1px solid var(--color-border);
+    border-top: none;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    z-index: 101;
+    max-height: 400px;
+    overflow-y: auto;
+    display: none;
+  }
+  .header__search-results.is-active {
+    display: block;
+  }
+  .search-result-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid var(--color-border);
+    gap: 15px;
+    transition: background 0.2s;
+  }
+  .search-result-item:hover {
+    background: rgba(0,0,0,0.02);
+  }
+  .search-result-item img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    background: var(--color-border);
+  }
+  .search-result-item p {
+    font-size: 0.9rem;
+    font-weight: bold;
+    margin: 0;
+    line-height: 1.2;
+    flex: 1;
+  }
+  .search-result-item span {
+    font-size: 0.85rem;
+    color: var(--color-primary);
+  }
+  .search-result-empty {
+    padding: 15px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
   }
   .header__icons {
     display: flex;
@@ -489,37 +567,68 @@
     }
   }
 
-  // Simple AJAX search implementation
-  const searchInput = document.getElementById('search-input');
-  const searchResults = document.getElementById('search-results');
+    // Dual AJAX search implementation (Mobile + Desktop)
+  const searchInputs = [document.getElementById('search-input-mobile'), document.getElementById('search-input-desktop')];
+  const searchResultContainers = [document.getElementById('search-results-mobile'), document.getElementById('search-results-desktop')];
 
-  searchInput.addEventListener('input', debounce(function() {
-    const query = this.value;
-    if (query.length > 2) {
-      fetch(`/search/suggest.json?q=${query}&resources[type]=product`)
-        .then(response => response.json())
-        .then(data => {
-          const products = data.resources.results.products;
-          if (products.length > 0) {
-            let html = '';
-            products.forEach(product => {
-              html += `
-                <a href="${product.url}" class="search-result-item">
-                  <img src="${product.image}" alt="${product.title}">
-                  <p>${product.title}</p>
-                  <span>${product.price}</span>
-                </a>
-              `;
-            });
-            searchResults.innerHTML = html;
-          } else {
-            searchResults.innerHTML = '<p>Aucun résultat trouvé.</p>';
-          }
-        });
-    } else {
-      searchResults.innerHTML = '';
-    }
-  }, 300));
+  searchInputs.forEach((input, index) => {
+    if(!input) return;
+    input.addEventListener('input', debounce(function() {
+      const query = this.value;
+      const searchResults = searchResultContainers[index];
+      if(!searchResults) return;
+
+      if (query.length > 2) {
+        searchResults.classList.add('is-active');
+        fetch(`/search/suggest.json?q=${query}&resources[type]=product`)
+          .then(response => response.json())
+          .then(data => {
+            const products = data.resources.results.products;
+            if (products.length > 0) {
+              let html = '';
+              products.forEach(product => {
+                // Shopify API returns price as a float/string like "179.00". Format to "179,00 €"
+                const formattedPrice = parseFloat(product.price).toFixed(2).replace('.', ',') + ' €';
+
+                html += `
+                  <a href="${product.url}" class="search-result-item">
+                    <img src="${product.image}" alt="${product.title}" loading="lazy">
+                    <p>${product.title}</p>
+                    <span>${formattedPrice}</span>
+                  </a>
+                `;
+              });
+              searchResults.innerHTML = html;
+            } else {
+              searchResults.innerHTML = '<div class="search-result-empty">Aucun résultat trouvé.</div>';
+            }
+          });
+      } else {
+        searchResults.innerHTML = '';
+        searchResults.classList.remove('is-active');
+      }
+    }, 300));
+  });
+
+  // Hide search results when clicking outside
+  document.addEventListener('click', function(event) {
+    searchInputs.forEach((input, i) => {
+      const res = searchResultContainers[i];
+      if (res && !res.contains(event.target) && input && !input.contains(event.target)) {
+        res.classList.remove('is-active');
+      }
+    });
+  });
+
+  // Show again when clicking input if there's text
+  searchInputs.forEach((input, index) => {
+    if(!input) return;
+    input.addEventListener('click', function() {
+      if (this.value.length > 2 && searchResultContainers[index]) {
+        searchResultContainers[index].classList.add('is-active');
+      }
+    });
+  });
 
   function debounce(func, wait) {
     let timeout;

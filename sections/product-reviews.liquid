@@ -1,18 +1,197 @@
-<div class="product-reviews" style="padding: 40px 0; border-top: 1px solid var(--color-border); margin-top: 40px;">
+<div class="product-reviews" data-section-id="{{ section.id }}" style="padding: 60px 0; border-top: 1px solid var(--color-border); margin-top: 40px;">
   <div class="container">
-    <h2 style="text-align: center; margin-bottom: 30px; font-size: 1.5rem; text-transform: uppercase;">Avis clients</h2>
-    <div id="shopify-product-reviews" data-id="{{product.id}}">{{ product.metafields.spr.reviews }}</div>
-    <p style="text-align: center; color: var(--color-text-secondary); font-size: 0.9rem;">(Avis gérés via l'application native Shopify Reviews ou code HTML statique à intégrer ici)</p>
+    <h2 class="reviews__title">{{ section.settings.title | default: 'AVIS CLIENTS' }}</h2>
+
+    {% if section.blocks.size > 0 %}
+      <div class="reviews__grid">
+        {% for block in section.blocks %}
+          <div class="review-card fade-up" {{ block.shopify_attributes }} style="animation-delay: {{ forloop.index0 | times: 0.1 }}s;">
+            <div class="review-card__header">
+              <div class="review-card__stars">
+                {% for i in (1..5) %}
+                  {% if i <= block.settings.rating %}
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  {% else %}
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  {% endif %}
+                {% endfor %}
+              </div>
+              {% if block.settings.date != blank %}
+                <span class="review-card__date">{{ block.settings.date }}</span>
+              {% endif %}
+            </div>
+
+            {% if block.settings.title != blank %}
+              <h3 class="review-card__title">{{ block.settings.title }}</h3>
+            {% endif %}
+
+            <div class="review-card__content">
+              <p>{{ block.settings.content }}</p>
+            </div>
+
+            <div class="review-card__author">
+              <span class="author-name">{{ block.settings.author }}</span>
+              <span class="author-verify">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2e7d32" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                Achat vérifié
+              </span>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p style="text-align: center; color: var(--color-text-secondary); font-size: 0.9rem;">(Ajoutez des avis depuis l'éditeur de thème)</p>
+    {% endif %}
   </div>
 </div>
+
+<style>
+  .reviews__title {
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 1.5rem;
+    font-family: var(--font-heading);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .reviews__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  @media screen and (min-width: 768px) {
+    .reviews__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media screen and (min-width: 1024px) {
+    .reviews__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .review-card {
+    background: var(--color-background);
+    border: 1px solid var(--color-border);
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+  }
+  .review-card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+  .review-card__stars {
+    display: flex;
+    gap: 2px;
+    color: var(--color-primary);
+  }
+  .review-card__date {
+    font-size: 0.8rem;
+    color: var(--color-text-secondary);
+  }
+  .review-card__title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+  }
+  .review-card__content {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+    margin-bottom: 20px;
+    flex-grow: 1;
+  }
+  .review-card__author {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: auto;
+    padding-top: 15px;
+    border-top: 1px solid var(--color-border);
+  }
+  .author-name {
+    font-weight: bold;
+    font-size: 0.95rem;
+  }
+  .author-verify {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.8rem;
+    color: #2e7d32;
+    font-weight: 500;
+  }
+</style>
 
 {% schema %}
 {
   "name": "Avis Clients",
-  "target": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titre de la section",
+      "default": "AVIS CLIENTS"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Avis",
+      "settings": [
+        {
+          "type": "range",
+          "id": "rating",
+          "min": 1,
+          "max": 5,
+          "step": 1,
+          "label": "Note (Étoiles)",
+          "default": 5
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titre de l'avis",
+          "default": "Excellente qualité"
+        },
+        {
+          "type": "textarea",
+          "id": "content",
+          "label": "Contenu de l'avis",
+          "default": "Le produit est parfait et correspond exactement à la description. La livraison a été rapide."
+        },
+        {
+          "type": "text",
+          "id": "author",
+          "label": "Nom du client",
+          "default": "Jean D."
+        },
+        {
+          "type": "text",
+          "id": "date",
+          "label": "Date (Optionnel)",
+          "default": "Il y a 2 jours"
+        }
+      ]
+    }
+  ],
   "presets": [
     {
-      "name": "Avis Clients"
+      "name": "Avis Clients",
+      "blocks": [
+        {
+          "type": "review"
+        },
+        {
+          "type": "review"
+        },
+        {
+          "type": "review"
+        }
+      ]
     }
   ]
 }
