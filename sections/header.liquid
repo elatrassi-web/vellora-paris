@@ -6,7 +6,7 @@
   </div>
 
   <div class="header__main">
-    <div class="container header__container">
+    <div class="header__container-full header__container">
       <!-- Mobile Menu Toggle -->
       <button class="header__icon header__icon--menu d-lg-none" aria-label="Menu" onclick="toggleMobileMenu()">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
@@ -42,15 +42,9 @@
       <!-- Logo -->
       <a href="/" class="header__logo">
         {% if section.settings.logo %}
-          <img src="{{ section.settings.logo | img_url: 'master' }}" alt="{{ shop.name }}">
+          <img src="{{ section.settings.logo | img_url: 'master' }}" alt="{{ shop.name }}" class="header__logo-image">
         {% else %}
-          <div class="header__logo-svg">
-            <svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M25 15 L45 85 L55 85 L60 65 L48 20 L45 15 Z" fill="var(--color-primary)"/>
-              <path d="M75 15 L50 95 L40 95 L15 15 L25 15 L45 80 L65 15 Z" fill="var(--color-primary)"/>
-            </svg>
-          </div>
-          <h2>VELLORA <br><span>PARIS</span></h2>
+          <img src="{{ 'logo.jpeg' | asset_url }}" alt="VELLORA PARIS" class="header__logo-image">
         {% endif %}
       </a>
 
@@ -112,19 +106,22 @@
         </ul>
       </nav>
 
-      <!-- Smart Search (Always Visible) -->
+      <!-- Smart Search (Desktop Always Visible) -->
       <div class="header__search-wrapper d-none d-lg-block">
         <form action="/search" method="get" class="header__search-form">
           <button type="submit" aria-label="Rechercher">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           </button>
-          <input type="text" name="q" placeholder="Rechercher..." autocomplete="off" id="search-input">
+          <input type="text" name="q" placeholder="Rechercher..." autocomplete="off" id="search-input-desktop">
         </form>
-        <div class="header__search-results" id="search-results"></div>
+        <div class="header__search-results" id="search-results-desktop"></div>
       </div>
 
       <!-- Icons -->
       <div class="header__icons">
+        <button class="header__icon d-lg-none" aria-label="Recherche" onclick="toggleSearch()">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
         <a href="{{ routes.account_url }}" class="header__icon" aria-label="Compte">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         </a>
@@ -138,6 +135,22 @@
         </button>
       </div>
     </div>
+  </div>
+
+  <!-- Smart Search (Hidden by default) -->
+  <div id="smart-search" class="smart-search d-lg-none" aria-hidden="true">
+    <div class="container">
+      <form action="/search" method="get" class="smart-search__form">
+        <input type="text" name="q" placeholder="Rechercher des marques, vêtements..." autocomplete="off" id="search-input-mobile">
+        <button type="submit" aria-label="Rechercher">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+      </form>
+      <div class="smart-search__results" id="search-results-mobile"></div>
+    </div>
+    <button class="smart-search__close" onclick="toggleSearch()" aria-label="Fermer la recherche">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
   </div>
 </header>
 
@@ -153,6 +166,17 @@
   }
   .header.is-sticky {
     box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+  .header__container-full {
+    width: 100%;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  @media screen and (min-width: 1024px) {
+    .header__container-full {
+      padding-left: 40px;
+      padding-right: 40px;
+    }
   }
   .header__top-bar {
     background-color: var(--color-primary);
@@ -173,28 +197,18 @@
   .header.is-sticky .header__container {
     height: 60px;
   }
-  .header__logo {
+    .header__logo {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    text-align: center;
+    justify-content: center;
   }
-  .header__logo-svg {
-    margin-bottom: 5px;
+  .header__logo-image {
+    max-height: 50px;
+    width: auto;
+    object-fit: contain;
   }
-  .header__logo h2 {
-    margin: 0;
-    font-size: 1.2rem;
-    line-height: 1.1;
-    letter-spacing: 6px;
-    font-weight: 500;
-  }
-  .header__logo span {
-    font-size: 0.75rem;
-    letter-spacing: 8px;
-    font-weight: 300;
-    display: block;
-    margin-top: 2px;
+  .header.is-sticky .header__logo-image {
+    max-height: 40px;
   }
   .header__menu {
     display: flex;
@@ -307,12 +321,7 @@
   .header__mega-menu-list ul a:hover {
     color: var(--color-primary);
   }
-  .header__icons {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-  }
-  .header__search-wrapper {
+    .header__search-wrapper {
     position: relative;
     flex: 1;
     max-width: 300px;
@@ -384,6 +393,11 @@
     font-size: 0.9rem;
     color: var(--color-text-secondary);
   }
+  .header__icons {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
   .header__icon {
     position: relative;
     display: flex;
@@ -408,6 +422,48 @@
     justify-content: center;
   }
 
+  /* Smart Search Styles */
+  .smart-search {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: var(--color-background);
+    padding: 20px 0;
+    border-top: 1px solid var(--color-border);
+    visibility: hidden;
+    opacity: 0;
+    transition: all 0.3s ease;
+  }
+  .smart-search.is-open {
+    visibility: visible;
+    opacity: 1;
+  }
+  .smart-search__form {
+    display: flex;
+    align-items: center;
+    border-bottom: 2px solid var(--color-primary);
+    padding-bottom: 10px;
+  }
+  .smart-search__form input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 1.2rem;
+    font-family: var(--font-body);
+    padding: 10px;
+  }
+  .smart-search__close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+  }
+  .smart-search__results {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+  }
 
   /* Mobile Menu Styles */
   .mobile-menu {
@@ -503,13 +559,25 @@
     }
   }
 
-  // Simple AJAX search implementation
-  const searchInput = document.getElementById('search-input');
-  const searchResults = document.getElementById('search-results');
+  function toggleSearch() {
+    const searchBar = document.getElementById('smart-search');
+    searchBar.classList.toggle('is-open');
+    if (searchBar.classList.contains('is-open')) {
+      document.getElementById('search-input').focus();
+    }
+  }
 
-  if (searchInput && searchResults) {
-    searchInput.addEventListener('input', debounce(function() {
+    // Dual AJAX search implementation (Mobile + Desktop)
+  const searchInputs = [document.getElementById('search-input-mobile'), document.getElementById('search-input-desktop')];
+  const searchResultContainers = [document.getElementById('search-results-mobile'), document.getElementById('search-results-desktop')];
+
+  searchInputs.forEach((input, index) => {
+    if(!input) return;
+    input.addEventListener('input', debounce(function() {
       const query = this.value;
+      const searchResults = searchResultContainers[index];
+      if(!searchResults) return;
+
       if (query.length > 2) {
         searchResults.classList.add('is-active');
         fetch(`/search/suggest.json?q=${query}&resources[type]=product`)
@@ -537,21 +605,27 @@
         searchResults.classList.remove('is-active');
       }
     }, 300));
+  });
 
-    // Hide search results when clicking outside
-    document.addEventListener('click', function(event) {
-      if (!searchInput.contains(event.target) && !searchResults.contains(event.target)) {
-        searchResults.classList.remove('is-active');
+  // Hide search results when clicking outside
+  document.addEventListener('click', function(event) {
+    searchInputs.forEach((input, i) => {
+      const res = searchResultContainers[i];
+      if (res && !res.contains(event.target) && input && !input.contains(event.target)) {
+        res.classList.remove('is-active');
       }
     });
+  });
 
-    // Show again when clicking input if there's text
-    searchInput.addEventListener('click', function() {
-      if (this.value.length > 2) {
-        searchResults.classList.add('is-active');
+  // Show again when clicking input if there's text
+  searchInputs.forEach((input, index) => {
+    if(!input) return;
+    input.addEventListener('click', function() {
+      if (this.value.length > 2 && searchResultContainers[index]) {
+        searchResultContainers[index].classList.add('is-active');
       }
     });
-  }
+  });
 
   function debounce(func, wait) {
     let timeout;
