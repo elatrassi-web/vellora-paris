@@ -112,11 +112,19 @@
         </ul>
       </nav>
 
+      <!-- Smart Search (Always Visible) -->
+      <div class="header__search-wrapper d-none d-lg-block">
+        <form action="/search" method="get" class="header__search-form">
+          <button type="submit" aria-label="Rechercher">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </button>
+          <input type="text" name="q" placeholder="Rechercher..." autocomplete="off" id="search-input">
+        </form>
+        <div class="header__search-results" id="search-results"></div>
+      </div>
+
       <!-- Icons -->
       <div class="header__icons">
-        <button class="header__icon" aria-label="Recherche" onclick="toggleSearch()">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        </button>
         <a href="{{ routes.account_url }}" class="header__icon" aria-label="Compte">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         </a>
@@ -130,22 +138,6 @@
         </button>
       </div>
     </div>
-  </div>
-
-  <!-- Smart Search (Hidden by default) -->
-  <div id="smart-search" class="smart-search" aria-hidden="true">
-    <div class="container">
-      <form action="/search" method="get" class="smart-search__form">
-        <input type="text" name="q" placeholder="Rechercher des marques, vêtements..." autocomplete="off" id="search-input">
-        <button type="submit" aria-label="Rechercher">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        </button>
-      </form>
-      <div class="smart-search__results" id="search-results"></div>
-    </div>
-    <button class="smart-search__close" onclick="toggleSearch()" aria-label="Fermer la recherche">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
-    </button>
   </div>
 </header>
 
@@ -320,6 +312,78 @@
     align-items: center;
     gap: 15px;
   }
+  .header__search-wrapper {
+    position: relative;
+    flex: 1;
+    max-width: 300px;
+    margin: 0 20px;
+  }
+  .header__search-form {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 5px;
+  }
+  .header__search-form input {
+    border: none;
+    outline: none;
+    width: 100%;
+    padding: 5px 10px;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    background: transparent;
+  }
+  .header__search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: var(--color-background);
+    border: 1px solid var(--color-border);
+    border-top: none;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    z-index: 101;
+    max-height: 400px;
+    overflow-y: auto;
+    display: none;
+  }
+  .header__search-results.is-active {
+    display: block;
+  }
+  .search-result-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid var(--color-border);
+    gap: 15px;
+    transition: background 0.2s;
+  }
+  .search-result-item:hover {
+    background: rgba(0,0,0,0.02);
+  }
+  .search-result-item img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    background: var(--color-border);
+  }
+  .search-result-item p {
+    font-size: 0.9rem;
+    font-weight: bold;
+    margin: 0;
+    line-height: 1.2;
+    flex: 1;
+  }
+  .search-result-item span {
+    font-size: 0.85rem;
+    color: var(--color-primary);
+  }
+  .search-result-empty {
+    padding: 15px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+  }
   .header__icon {
     position: relative;
     display: flex;
@@ -345,47 +409,6 @@
   }
 
   /* Smart Search Styles */
-  .smart-search {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    background: var(--color-background);
-    padding: 20px 0;
-    border-top: 1px solid var(--color-border);
-    visibility: hidden;
-    opacity: 0;
-    transition: all 0.3s ease;
-  }
-  .smart-search.is-open {
-    visibility: visible;
-    opacity: 1;
-  }
-  .smart-search__form {
-    display: flex;
-    align-items: center;
-    border-bottom: 2px solid var(--color-primary);
-    padding-bottom: 10px;
-  }
-  .smart-search__form input {
-    flex: 1;
-    border: none;
-    outline: none;
-    font-size: 1.2rem;
-    font-family: var(--font-body);
-    padding: 10px;
-  }
-  .smart-search__close {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-  }
-  .smart-search__results {
-    margin-top: 20px;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 20px;
-  }
 
   /* Mobile Menu Styles */
   .mobile-menu {
@@ -481,45 +504,55 @@
     }
   }
 
-  function toggleSearch() {
-    const searchBar = document.getElementById('smart-search');
-    searchBar.classList.toggle('is-open');
-    if (searchBar.classList.contains('is-open')) {
-      document.getElementById('search-input').focus();
-    }
-  }
-
   // Simple AJAX search implementation
   const searchInput = document.getElementById('search-input');
   const searchResults = document.getElementById('search-results');
 
-  searchInput.addEventListener('input', debounce(function() {
-    const query = this.value;
-    if (query.length > 2) {
-      fetch(`/search/suggest.json?q=${query}&resources[type]=product`)
-        .then(response => response.json())
-        .then(data => {
-          const products = data.resources.results.products;
-          if (products.length > 0) {
-            let html = '';
-            products.forEach(product => {
-              html += `
-                <a href="${product.url}" class="search-result-item">
-                  <img src="${product.image}" alt="${product.title}">
-                  <p>${product.title}</p>
-                  <span>${product.price}</span>
-                </a>
-              `;
-            });
-            searchResults.innerHTML = html;
-          } else {
-            searchResults.innerHTML = '<p>Aucun résultat trouvé.</p>';
-          }
-        });
-    } else {
-      searchResults.innerHTML = '';
-    }
-  }, 300));
+  if (searchInput && searchResults) {
+    searchInput.addEventListener('input', debounce(function() {
+      const query = this.value;
+      if (query.length > 2) {
+        searchResults.classList.add('is-active');
+        fetch(`/search/suggest.json?q=${query}&resources[type]=product`)
+          .then(response => response.json())
+          .then(data => {
+            const products = data.resources.results.products;
+            if (products.length > 0) {
+              let html = '';
+              products.forEach(product => {
+                html += `
+                  <a href="${product.url}" class="search-result-item">
+                    <img src="${product.image}" alt="${product.title}" loading="lazy">
+                    <p>${product.title}</p>
+                    <span>${product.price}</span>
+                  </a>
+                `;
+              });
+              searchResults.innerHTML = html;
+            } else {
+              searchResults.innerHTML = '<div class="search-result-empty">Aucun résultat trouvé.</div>';
+            }
+          });
+      } else {
+        searchResults.innerHTML = '';
+        searchResults.classList.remove('is-active');
+      }
+    }, 300));
+
+    // Hide search results when clicking outside
+    document.addEventListener('click', function(event) {
+      if (!searchInput.contains(event.target) && !searchResults.contains(event.target)) {
+        searchResults.classList.remove('is-active');
+      }
+    });
+
+    // Show again when clicking input if there's text
+    searchInput.addEventListener('click', function() {
+      if (this.value.length > 2) {
+        searchResults.classList.add('is-active');
+      }
+    });
+  }
 
   function debounce(func, wait) {
     let timeout;
