@@ -162,10 +162,13 @@
     width: 100%;
     z-index: 100;
     background-color: var(--color-background);
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
   }
   .header.is-sticky {
     box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+  .header.is-hidden {
+    transform: translateY(-100%);
   }
   .header__container-full {
     width: 100%;
@@ -638,6 +641,32 @@
       timeout = setTimeout(() => func.apply(context, args), wait);
     };
   }
+
+  // Sticky Header Logic with Scroll Direction Detection
+  let lastScrollTop = 0;
+  const headerElement = document.querySelector('.header');
+
+  window.addEventListener('scroll', debounce(function() {
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+    // Toggle condensed styling (is-sticky)
+    if (scrollTop > 50) {
+      headerElement.classList.add('is-sticky');
+    } else {
+      headerElement.classList.remove('is-sticky');
+    }
+
+    // Toggle hide/show animation based on scroll direction
+    if (scrollTop > lastScrollTop && scrollTop > 100) {
+      // Downscroll
+      headerElement.classList.add('is-hidden');
+    } else {
+      // Upscroll
+      headerElement.classList.remove('is-hidden');
+    }
+
+    lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // For Mobile or negative scrolling
+  }, 10)); // very fast debounce to ensure smooth logic without freezing
 </script>
 
 {% schema %}
