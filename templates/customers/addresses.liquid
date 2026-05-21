@@ -1,0 +1,441 @@
+<div class="customer-addresses">
+  <div class="container">
+    <div class="account-header fade-up">
+      <h1>Mes Adresses</h1>
+      <a href="{{ routes.account_url }}" class="link-underline">Retour au compte</a>
+    </div>
+
+    <div class="addresses-layout fade-up" style="animation-delay: 0.2s;">
+
+      <!-- Add New Address Form (Hidden by default) -->
+      <div id="AddAddress" class="address-form-wrapper" style="display: none;">
+        <h2>Ajouter une nouvelle adresse</h2>
+        {%- form 'customer_address', customer.new_address -%}
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="AddressFirstNameNew">Prénom</label>
+              <input type="text" id="AddressFirstNameNew" name="address[first_name]" value="{{ form.first_name }}" autocomplete="given-name">
+            </div>
+            <div class="form-group">
+              <label for="AddressLastNameNew">Nom</label>
+              <input type="text" id="AddressLastNameNew" name="address[last_name]" value="{{ form.last_name }}" autocomplete="family-name">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="AddressCompanyNew">Entreprise</label>
+            <input type="text" id="AddressCompanyNew" name="address[company]" value="{{ form.company }}" autocomplete="organization">
+          </div>
+
+          <div class="form-group">
+            <label for="AddressAddress1New">Adresse 1</label>
+            <input type="text" id="AddressAddress1New" name="address[address1]" value="{{ form.address1 }}" autocomplete="address-line1">
+          </div>
+
+          <div class="form-group">
+            <label for="AddressAddress2New">Adresse 2 (Optionnel)</label>
+            <input type="text" id="AddressAddress2New" name="address[address2]" value="{{ form.address2 }}" autocomplete="address-line2">
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="AddressCityNew">Ville</label>
+              <input type="text" id="AddressCityNew" name="address[city]" value="{{ form.city }}" autocomplete="address-level2">
+            </div>
+            <div class="form-group">
+              <label for="AddressCountryNew">Pays</label>
+              <select id="AddressCountryNew" name="address[country]" data-default="{{ form.country }}" autocomplete="country">{{ all_country_option_tags }}</select>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group" id="AddressProvinceContainerNew" style="display: none;">
+              <label for="AddressProvinceNew">Région</label>
+              <select id="AddressProvinceNew" name="address[province]" data-default="{{ form.province }}" autocomplete="address-level1"></select>
+            </div>
+            <div class="form-group">
+              <label for="AddressZipNew">Code Postal</label>
+              <input type="text" id="AddressZipNew" name="address[zip]" value="{{ form.zip }}" autocapitalize="characters" autocomplete="postal-code">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="AddressPhoneNew">Téléphone</label>
+            <input type="tel" id="AddressPhoneNew" name="address[phone]" value="{{ form.phone }}" autocomplete="tel">
+          </div>
+
+          <div class="form-group custom-checkbox">
+            {{ form.set_as_default_checkbox }}
+            <span class="checkmark"></span>
+            <label for="address_default_address_new">Définir comme adresse par défaut</label>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn--primary">Ajouter l'adresse</button>
+            <button type="button" class="btn btn--outline" onclick="toggleForm('AddAddress')">Annuler</button>
+          </div>
+        {%- endform -%}
+      </div>
+
+      <!-- Add New Address Button -->
+      <button type="button" class="btn btn--primary btn--add-address" aria-expanded="false" aria-controls="AddAddress" onclick="toggleForm('AddAddress')">
+        Ajouter une adresse
+      </button>
+
+      <!-- Existing Addresses List -->
+      {% paginate customer.addresses by 10 %}
+      <ul role="list" class="address-list">
+        {%- for address in customer.addresses -%}
+          <li data-address class="address-card {% if address == customer.default_address %}address-card--default{% endif %}">
+            {%- if address == customer.default_address -%}
+              <span class="badge">Par défaut</span>
+            {%- endif -%}
+
+            {{ address | format_address }}
+
+            <div class="address-actions">
+              <button
+                type="button"
+                id="EditFormButton_{{ address.id }}"
+                aria-label="Modifier l'adresse {{ forloop.index }}"
+                aria-controls="EditAddress_{{ address.id }}"
+                aria-expanded="false"
+                class="link-underline"
+                onclick="toggleForm('EditAddress_{{ address.id }}')"
+              >
+                Modifier
+              </button>
+
+              <form class="address-delete-form" method="post" action="/account/addresses/{{ address.id }}">
+                <input type="hidden" name="_method" value="delete">
+                <button type="submit" class="link-underline" aria-label="Supprimer l'adresse {{ forloop.index }}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette adresse ?');">
+                  Supprimer
+                </button>
+              </form>
+            </div>
+
+            <!-- Edit Address Form (Hidden by default) -->
+            <div id="EditAddress_{{ address.id }}" class="address-form-wrapper" style="display: none;">
+              <h2>Modifier l'adresse</h2>
+              {%- form 'customer_address', address -%}
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label for="AddressFirstName_{{ form.id }}">Prénom</label>
+                    <input type="text" id="AddressFirstName_{{ form.id }}" name="address[first_name]" value="{{ form.first_name }}" autocomplete="given-name">
+                  </div>
+                  <div class="form-group">
+                    <label for="AddressLastName_{{ form.id }}">Nom</label>
+                    <input type="text" id="AddressLastName_{{ form.id }}" name="address[last_name]" value="{{ form.last_name }}" autocomplete="family-name">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="AddressCompany_{{ form.id }}">Entreprise</label>
+                  <input type="text" id="AddressCompany_{{ form.id }}" name="address[company]" value="{{ form.company }}" autocomplete="organization">
+                </div>
+
+                <div class="form-group">
+                  <label for="AddressAddress1_{{ form.id }}">Adresse 1</label>
+                  <input type="text" id="AddressAddress1_{{ form.id }}" name="address[address1]" value="{{ form.address1 }}" autocomplete="address-line1">
+                </div>
+
+                <div class="form-group">
+                  <label for="AddressAddress2_{{ form.id }}">Adresse 2 (Optionnel)</label>
+                  <input type="text" id="AddressAddress2_{{ form.id }}" name="address[address2]" value="{{ form.address2 }}" autocomplete="address-line2">
+                </div>
+
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label for="AddressCity_{{ form.id }}">Ville</label>
+                    <input type="text" id="AddressCity_{{ form.id }}" name="address[city]" value="{{ form.city }}" autocomplete="address-level2">
+                  </div>
+                  <div class="form-group">
+                    <label for="AddressCountry_{{ form.id }}">Pays</label>
+                    <select id="AddressCountry_{{ form.id }}" name="address[country]" data-default="{{ form.country }}" autocomplete="country">{{ all_country_option_tags }}</select>
+                  </div>
+                </div>
+
+                <div class="form-grid">
+                  <div class="form-group" id="AddressProvinceContainer_{{ form.id }}" style="display: none;">
+                    <label for="AddressProvince_{{ form.id }}">Région</label>
+                    <select id="AddressProvince_{{ form.id }}" name="address[province]" data-default="{{ form.province }}" autocomplete="address-level1"></select>
+                  </div>
+                  <div class="form-group">
+                    <label for="AddressZip_{{ form.id }}">Code Postal</label>
+                    <input type="text" id="AddressZip_{{ form.id }}" name="address[zip]" value="{{ form.zip }}" autocapitalize="characters" autocomplete="postal-code">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="AddressPhone_{{ form.id }}">Téléphone</label>
+                  <input type="tel" id="AddressPhone_{{ form.id }}" name="address[phone]" value="{{ form.phone }}" autocomplete="tel">
+                </div>
+
+                <div class="form-group custom-checkbox">
+                  {{ form.set_as_default_checkbox }}
+                  <span class="checkmark"></span>
+                  <label for="address_default_address_{{ form.id }}">Définir comme adresse par défaut</label>
+                </div>
+
+                <div class="form-actions">
+                  <button type="submit" class="btn btn--primary">Mettre à jour</button>
+                  <button type="button" class="btn btn--outline" onclick="toggleForm('EditAddress_{{ address.id }}')">Annuler</button>
+                </div>
+              {%- endform -%}
+            </div>
+          </li>
+        {%- endfor -%}
+      </ul>
+
+      {%- if paginate.pages > 1 -%}
+        <div class="pagination">
+          {{ paginate | default_pagination }}
+        </div>
+      {%- endif -%}
+      {% endpaginate %}
+
+    </div>
+  </div>
+</div>
+
+<style>
+  .customer-addresses {
+    padding: 80px 0;
+  }
+  .account-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 40px;
+    border-bottom: 2px solid var(--color-primary);
+    padding-bottom: 20px;
+  }
+  .account-header h1 {
+    margin: 0;
+    font-size: 2rem;
+    letter-spacing: 2px;
+  }
+
+  .addresses-layout {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .btn--add-address {
+    width: 100%;
+    margin-bottom: 40px;
+  }
+
+  .address-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  @media screen and (min-width: 768px) {
+    .address-list {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .address-card {
+    background: #f9f9f9;
+    padding: 30px;
+    border: 1px solid var(--color-border);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+  .address-card--default {
+    border-color: var(--color-primary);
+  }
+  .badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: var(--color-primary);
+    color: var(--color-background);
+    padding: 5px 10px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  .address-card p {
+    margin: 0 0 5px 0;
+    line-height: 1.5;
+  }
+
+  .address-actions {
+    margin-top: auto;
+    padding-top: 20px;
+    display: flex;
+    gap: 15px;
+  }
+  .address-delete-form {
+    display: inline;
+  }
+
+  .address-form-wrapper {
+    background: var(--color-background);
+    border: 1px solid var(--color-border);
+    padding: 30px;
+    margin-bottom: 40px;
+    grid-column: 1 / -1; /* spans full width if inside grid */
+  }
+  .address-form-wrapper h2 {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  @media screen and (min-width: 768px) {
+    .form-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+  .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    font-size: 0.9rem;
+  }
+  .form-group input, .form-group select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--color-border);
+    font-family: var(--font-body);
+    background: var(--color-background);
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+  }
+  .form-actions .btn {
+    flex: 1;
+  }
+
+  .custom-checkbox {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    padding-left: 30px;
+    margin-top: 10px;
+  }
+  .custom-checkbox input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+  .checkmark {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    height: 18px;
+    width: 18px;
+    background-color: transparent;
+    border: 1px solid var(--color-text-secondary);
+  }
+  .custom-checkbox input:checked ~ .checkmark {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+  }
+  .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+    left: 5px;
+    top: 2px;
+    width: 4px;
+    height: 8px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+  .custom-checkbox input:checked ~ .checkmark:after {
+    display: block;
+  }
+  .custom-checkbox label {
+    margin-bottom: 0;
+    font-weight: normal;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+</style>
+
+<script>
+  function toggleForm(formId) {
+    const form = document.getElementById(formId);
+    if (form.style.display === 'none') {
+      form.style.display = 'block';
+    } else {
+      form.style.display = 'none';
+    }
+  }
+
+  // Shopify's native province selector logic
+  window.addEventListener('load', () => {
+    if (typeof Shopify === 'undefined') {
+      window.Shopify = {};
+    }
+
+    // Country Province Selector helper
+    const countrySelectors = document.querySelectorAll('select[name="address[country]"]');
+
+    countrySelectors.forEach((select) => {
+      const formId = select.id.split('_')[1];
+      const provinceSelector = document.getElementById(`AddressProvince_${formId}`);
+      const provinceContainer = document.getElementById(`AddressProvinceContainer_${formId}`);
+
+      if (!provinceSelector) return;
+
+      select.addEventListener('change', function() {
+        const selectedOption = this.options[this.selectedIndex];
+        const provinces = selectedOption.getAttribute('data-provinces');
+
+        if (provinces && provinces !== '[]') {
+          const provincesArray = JSON.parse(provinces);
+          provinceSelector.innerHTML = '';
+
+          provincesArray.forEach((province) => {
+            const option = document.createElement('option');
+            option.value = province[0];
+            option.textContent = province[1];
+            provinceSelector.appendChild(option);
+          });
+
+          provinceContainer.style.display = 'block';
+        } else {
+          provinceContainer.style.display = 'none';
+        }
+      });
+
+      // Trigger initial state
+      if (select.getAttribute('data-default')) {
+        select.value = select.getAttribute('data-default');
+      }
+      select.dispatchEvent(new Event('change'));
+
+      if (provinceSelector.getAttribute('data-default')) {
+        provinceSelector.value = provinceSelector.getAttribute('data-default');
+      }
+    });
+  });
+</script>
