@@ -568,8 +568,41 @@
     .then(data => {
       btn.textContent = originalText;
       btn.disabled = false;
-      updateMiniCartContent();
-      openMiniCart();
+      // Fetch the updated cart drawer section
+      fetch(window.location.pathname + '?section_id=cart-drawer')
+        .then(res => res.text())
+        .then(text => {
+          const parser = new DOMParser();
+          const newDoc = parser.parseFromString(text, 'text/html');
+
+          const newBody = newDoc.getElementById('cart-drawer-body');
+          const newFooter = newDoc.getElementById('cart-drawer-footer');
+
+          if (newBody) {
+            document.getElementById('cart-drawer-body').innerHTML = newBody.innerHTML;
+          }
+
+          const existingFooter = document.getElementById('cart-drawer-footer');
+          if (newFooter && existingFooter) {
+            existingFooter.innerHTML = newFooter.innerHTML;
+          } else if (newFooter && !existingFooter) {
+             document.querySelector('.cart-drawer__content').insertBefore(newFooter, document.getElementById('cart-drawer-loader'));
+          } else if (!newFooter && existingFooter) {
+            existingFooter.remove();
+          }
+
+          // Update header cart count
+          fetch('/cart.js')
+            .then(res => res.json())
+            .then(cartData => {
+              const cartCountEl = document.querySelector('.header__cart-count');
+              if (cartCountEl) {
+                 cartCountEl.textContent = cartData.item_count;
+              }
+            });
+
+          openCartDrawer();
+        });
     })
     .catch(error => {
       console.error('Error:', error);
