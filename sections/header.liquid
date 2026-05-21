@@ -587,11 +587,14 @@
             if (products.length > 0) {
               let html = '';
               products.forEach(product => {
+                // Shopify API returns price as a float/string like "179.00". Format to "179,00 €"
+                const formattedPrice = parseFloat(product.price).toFixed(2).replace('.', ',') + ' €';
+
                 html += `
                   <a href="${product.url}" class="search-result-item">
                     <img src="${product.image}" alt="${product.title}" loading="lazy">
                     <p>${product.title}</p>
-                    <span>${product.price}</span>
+                    <span>${formattedPrice}</span>
                   </a>
                 `;
               });
