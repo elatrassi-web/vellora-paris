@@ -77,6 +77,11 @@ button {
   transform: scale(0.98);
 }
 
+.btn:active {
+  transform: scale(0.95);
+  transition: transform 0.2s ease;
+}
+
 .btn--outline {
   background-color: transparent;
   color: var(--color-primary);

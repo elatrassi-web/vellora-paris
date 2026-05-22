@@ -6,7 +6,8 @@
       <div class="product__gallery-main" id="product-gallery-main">
         {% for image in product.images %}
           <div class="product__gallery-slide {% if forloop.first %}is-active{% endif %}" data-index="{{ forloop.index0 }}" onclick="openImageZoom('{{ image | image_url }}')" style="cursor: zoom-in;">
-            {{ image | image_url: width: 1000 | image_tag: alt: image.alt, data-zoom: image }}
+            {% assign zoom_url = image | image_url %}
+            {{ image | image_url: width: 1000 | image_tag: alt: image.alt, data-zoom: zoom_url }}
           </div>
         {% endfor %}
         <!-- Navigation Arrows (Mobile) -->

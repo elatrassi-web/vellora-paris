@@ -1,79 +1,127 @@
-<div class="brands-grid" data-section-id="{{ section.id }}">
-  <div class="container">
-    <h2 class="brands-grid__title fade-up">NOS MARQUES PARTENAIRES</h2>
-    <div class="brands-grid__wrapper">
-      {% for block in section.blocks %}
-        <a href="{{ block.settings.link }}" class="brands-grid__item fade-up" style="animation-delay: {{ forloop.index | times: 0.1 }}s">
-          {% if block.settings.image != blank %}
-            {{ block.settings.image | image_url: width: 400x | image_tag: loading: 'lazy', alt: block.settings.title }}
-          {% else %}
-            <div class="brands-grid__placeholder">{{ block.settings.title }}</div>
-          {% endif %}
+<div class="brands-marquee" data-section-id="{{ section.id }}">
+  <div class="brands-marquee__track">
+    <!-- First set of logos -->
+    {% for block in section.blocks %}
+      {% if block.settings.image != blank %}
+        <a href="{{ block.settings.link }}" class="brands-marquee__item">
+          {{ block.settings.image | image_url: width: 300 | image_tag: loading: 'lazy', alt: block.settings.image.alt | default: 'Brand logo' }}
         </a>
-      {% endfor %}
-    </div>
+      {% endif %}
+    {% endfor %}
+
+    <!-- Duplicate set of logos to create the infinite seamless loop -->
+    {% for block in section.blocks %}
+      {% if block.settings.image != blank %}
+        <a href="{{ block.settings.link }}" class="brands-marquee__item" aria-hidden="true">
+          {{ block.settings.image | image_url: width: 300 | image_tag: loading: 'lazy', alt: block.settings.image.alt | default: 'Brand logo' }}
+        </a>
+      {% endif %}
+    {% endfor %}
   </div>
 </div>
 
 <style>
-  .brands-grid {
+  .brands-marquee {
     padding: 60px 0;
     background-color: var(--color-background);
-  }
-  .brands-grid__title {
-    text-align: center;
-    font-size: 1.5rem;
-    letter-spacing: 2px;
-    margin-bottom: 40px;
-  }
-  .brands-grid__wrapper {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-  }
-  @media screen and (min-width: 1024px) {
-    .brands-grid__wrapper {
-      grid-template-columns: repeat(4, 1fr);
-      gap: 40px;
-    }
-  }
-  .brands-grid__item {
+    overflow: hidden;
+    white-space: nowrap;
+    position: relative;
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
     display: flex;
     align-items: center;
+  }
+  .brands-marquee::before,
+  .brands-marquee::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    width: 150px;
+    height: 100%;
+    z-index: 2;
+  }
+  .brands-marquee::before {
+    left: 0;
+    background: linear-gradient(to right, var(--color-background) 0%, transparent 100%);
+  }
+  .brands-marquee::after {
+    right: 0;
+    background: linear-gradient(to left, var(--color-background) 0%, transparent 100%);
+  }
+
+  .brands-marquee__track {
+    display: inline-flex;
+    align-items: center;
+    gap: 80px; /* Space between logos */
+    padding-left: 80px;
+    animation: scrollMarquee 25s linear infinite;
+  }
+
+  .brands-marquee__track:hover {
+    animation-play-state: paused;
+  }
+
+  .brands-marquee__item {
+    display: inline-flex;
+    align-items: center;
     justify-content: center;
-    padding: 20px;
-    border: 1px solid transparent;
     transition: all 0.3s ease;
     filter: grayscale(100%);
-    opacity: 0.7;
+    opacity: 0.6;
   }
-  .brands-grid__item:hover {
+
+  .brands-marquee__item:hover {
     filter: grayscale(0%);
     opacity: 1;
     transform: scale(1.05);
-    border-color: var(--color-border);
   }
-  .brands-grid__item img {
-    max-height: 80px;
+
+  .brands-marquee__item img {
+    max-height: 50px;
     width: auto;
+    object-fit: contain;
   }
-  .brands-grid__placeholder {
-    font-family: var(--font-heading);
-    font-weight: bold;
-    font-size: 1.2rem;
-    color: var(--color-text-secondary);
-    text-transform: uppercase;
+
+  @keyframes scrollMarquee {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      /* Shifts exactly 50% of the track width (one full set of logos) */
+      transform: translateX(-50%);
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    .brands-marquee__item img {
+      max-height: 40px;
+    }
+    .brands-marquee__track {
+      gap: 50px;
+      padding-left: 50px;
+    }
+    .brands-marquee::before,
+    .brands-marquee::after {
+      width: 50px;
+    }
   }
 </style>
 
 {% schema %}
 {
-  "name": "Grille de Marques",
-  "max_blocks": 8,
+  "name": "Bande de Marques",
+  "max_blocks": 15,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Ajoutez des blocs avec des images pour créer un carrousel infini de logos. Les textes ne seront pas affichés."
+    }
+  ],
   "blocks": [
     {
       "type": "brand",
-      "name": "Marque",
+      "name": "Logo",
       "settings": [
         {
           "type": "image_picker",
@@ -81,31 +129,17 @@
           "label": "Logo de la marque"
         },
         {
-          "type": "text",
-          "id": "title",
-          "label": "Nom (si pas d'image)"
-        },
-        {
           "type": "url",
           "id": "link",
-          "label": "Lien vers la collection"
+          "label": "Lien vers la collection (Optionnel)"
         }
       ]
     }
   ],
   "presets": [
     {
-      "name": "Grille de Marques",
-      "category": "Image",
-      "blocks": [
-        { "type": "brand", "settings": { "title": "Prada" } },
-        { "type": "brand", "settings": { "title": "Asics" } },
-        { "type": "brand", "settings": { "title": "New Balance" } },
-        { "type": "brand", "settings": { "title": "Loewe" } },
-        { "type": "brand", "settings": { "title": "Chanel" } },
-        { "type": "brand", "settings": { "title": "Fred" } },
-        { "type": "brand", "settings": { "title": "Lunettes Premium" } }
-      ]
+      "name": "Bande de Marques (Roulette)",
+      "category": "Image"
     }
   ]
 }
