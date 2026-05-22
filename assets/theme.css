@@ -242,3 +242,47 @@ button {
 .modal__close:hover {
   color: var(--color-primary);
 }
+
+/* Custom Hero Animations */
+@keyframes fadeInScale {
+  0% { opacity: 0; transform: scale(0); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.fade-in-scale {
+  opacity: 0; /* starts hidden */
+}
+.fade-in-scale.is-visible {
+  animation: fadeInScale 1s forwards ease-out;
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+.fade-in-simple {
+  opacity: 0;
+}
+.fade-in-simple.is-visible {
+  animation: fadeIn 1.5s forwards ease-in-out;
+}
+
+/* Badge and Button Animations */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+.animate-pulse {
+  animation: pulse 2s infinite;
+}
+
+@keyframes shake {
+  0% { transform: rotate(0); }
+  25% { transform: rotate(-10deg); }
+  50% { transform: rotate(0); }
+  75% { transform: rotate(10deg); }
+  100% { transform: rotate(0); }
+}
+.animate-shake {
+  animation: shake 0.5s ease-in-out;
+}

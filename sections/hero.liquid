@@ -13,7 +13,7 @@
   </div>
 
   <div class="hero__content">
-    <div class="hero__logo-wrapper fade-up">
+    <div class="hero__logo-wrapper fade-in-scale">
       {% if section.settings.hero_logo != blank %}
         <img src="{{ section.settings.hero_logo | img_url: 'master' }}" alt="Vellora Logo" class="hero__logo">
       {% else %}
@@ -21,7 +21,7 @@
       {% endif %}
     </div>
 
-    <p class="hero__subtitle fade-up" style="animation-delay: 0.5s;">{{ section.settings.baseline | default: "L'expression d'un luxe urbain intemporel" }}</p>
+    <p class="hero__subtitle fade-in-simple" style="animation-delay: 1.5s;">{{ section.settings.baseline | default: "L'expression d'un luxe urbain intemporel" }}</p>
 
     <a href="{{ section.settings.cta_link | default: '/collections/all' }}" class="btn hero__btn fade-up" style="animation-delay: 0.8s;">
       {{ section.settings.cta_text | default: "DÉCOUVRIR LA COLLECTION" }}

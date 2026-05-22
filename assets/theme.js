@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }, observerOptions);
 
-  document.querySelectorAll('.fade-up').forEach(element => {
+  document.querySelectorAll('.fade-up, .fade-in-scale, .fade-in-simple').forEach(element => {
     observer.observe(element);
   });
 

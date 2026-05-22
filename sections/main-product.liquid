@@ -560,6 +560,16 @@
     btn.textContent = 'AJOUT...';
     btn.disabled = true;
 
+    // Add shake animation to the button and header cart icon
+    btn.classList.add('animate-shake');
+    const headerCartIcon = document.querySelector('.cart-icon');
+    if(headerCartIcon) headerCartIcon.classList.add('animate-shake');
+
+    setTimeout(() => {
+      btn.classList.remove('animate-shake');
+      if(headerCartIcon) headerCartIcon.classList.remove('animate-shake');
+    }, 500);
+
     fetch('/cart/add.js', {
       method: 'POST',
       body: formData
