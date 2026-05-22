@@ -37,9 +37,9 @@
           {% assign product_categories = product.type | downcase | append: ' ' | append: product_tags_string %}
           <div class="product-card js-filtered-product" data-categories="{{ product_categories }}">
             <a href="{{ product.url }}" class="product-card__image-wrapper">
-              <img src="{{ product.featured_image | img_url: '600x' }}" alt="{{ product.title }}" class="product-card__image" loading="lazy">
+              {{ product.featured_image | image_url: width: 600 | image_tag: class: 'product-card__image', loading: 'lazy', alt: product.title }}
               {% if product.images.size > 1 %}
-                <img src="{{ product.images[1] | img_url: '600x' }}" alt="{{ product.title }} back" class="product-card__image-hover" loading="lazy">
+                {{ product.images[1] | image_url: width: 600 | image_tag: class: 'product-card__image-hover', loading: 'lazy', alt: product.title }}
               {% endif %}
 
               {% if product.tags contains 'Nouveau' %}

@@ -14,7 +14,7 @@
           {% for item in cart.items %}
             <div class="cart-drawer__item" data-key="{{ item.key }}">
               <a href="{{ item.url }}" class="cart-drawer__item-image">
-                <img src="{{ item.image | img_url: '200x' }}" alt="{{ item.title }}" loading="lazy">
+                {{ item.image | image_url: width: 200x | image_tag: loading: 'lazy', alt: item.title }}
               </a>
               <div class="cart-drawer__item-details">
                 <a href="{{ item.url }}" class="cart-drawer__item-title">{{ item.product.title }}</a>

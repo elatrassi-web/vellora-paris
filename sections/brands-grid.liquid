@@ -5,7 +5,7 @@
       {% for block in section.blocks %}
         <a href="{{ block.settings.link }}" class="brands-grid__item fade-up" style="animation-delay: {{ forloop.index | times: 0.1 }}s">
           {% if block.settings.image != blank %}
-            <img src="{{ block.settings.image | img_url: '400x' }}" alt="{{ block.settings.title }}" loading="lazy">
+            {{ block.settings.image | image_url: width: 400x | image_tag: loading: 'lazy', alt: block.settings.title }}
           {% else %}
             <div class="brands-grid__placeholder">{{ block.settings.title }}</div>
           {% endif %}

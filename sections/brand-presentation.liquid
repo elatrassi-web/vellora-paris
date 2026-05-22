@@ -12,7 +12,7 @@
       </div>
       <div class="brand-presentation__image fade-up" style="animation-delay: 0.2s;">
         {% if section.settings.image != blank %}
-          <img src="{{ section.settings.image | img_url: '800x' }}" alt="Lifestyle image" loading="lazy">
+          {{ section.settings.image | image_url: width: 800 | image_tag: loading: 'lazy', alt: 'Lifestyle image' }}
         {% else %}
           <div class="brand-presentation__placeholder"></div>
         {% endif %}

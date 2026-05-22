@@ -34,7 +34,7 @@
                 {% if item.object_type == 'product' %}
                   <div class="product-card">
                     <a href="{{ item.url }}" class="product-card__image-wrapper">
-                      <img src="{{ item.featured_image | img_url: '600x' }}" alt="{{ item.title }}" class="product-card__image" loading="lazy">
+                      {{ item.featured_image | image_url: width: 600 | image_tag: class: 'product-card__image', loading: 'lazy', alt: item.title }}
 
                       <!-- Auth badge if applicable -->
                       <div class="product-card__auth-badge">

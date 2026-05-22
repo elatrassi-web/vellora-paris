@@ -42,9 +42,9 @@
       <!-- Logo -->
       <a href="/" class="header__logo">
         {% if section.settings.logo %}
-          <img src="{{ section.settings.logo | img_url: 'master' }}" alt="{{ shop.name }}" class="header__logo-image">
+          {{ section.settings.logo | image_url: width: 300 | image_tag: class: 'header__logo-image', loading: 'eager', alt: shop.name }}
         {% else %}
-          <img src="{{ 'logo.jpeg' | asset_url }}" alt="VELLORA PARIS" class="header__logo-image">
+          <img src="{{ 'logo.jpeg' | asset_url }}" alt="VELLORA PARIS" class="header__logo-image" loading="eager">
         {% endif %}
       </a>
 
@@ -85,7 +85,7 @@
                             <div class="header__mega-menu-promo">
                               <a href="{{ block.settings.link }}" class="header__promo-image-wrapper">
                                 {% if block.settings.image != blank %}
-                                  <img src="{{ block.settings.image | img_url: '400x' }}" alt="{{ block.settings.title }}" loading="lazy">
+                                  {{ block.settings.image | image_url: width: 400x | image_tag: loading: 'lazy', alt: block.settings.title }}
                                 {% else %}
                                   <div class="header__promo-placeholder"></div>
                                 {% endif %}

@@ -5,7 +5,7 @@
         <source src="{{ section.settings.video_url }}" type="video/mp4">
       </video>
     {% elsif section.settings.image != blank %}
-      <div class="hero__image fade-in" style="background-image: url('{{ section.settings.image | img_url: 'master' }}');"></div>
+      <div class="hero__image fade-in" style="background-image: url('{{ section.settings.image | image_url }}');"></div>
     {% else %}
       <div class="hero__placeholder fade-in"></div>
     {% endif %}
@@ -15,7 +15,7 @@
   <div class="hero__content">
     <div class="hero__logo-wrapper fade-in-scale">
       {% if section.settings.hero_logo != blank %}
-        <img src="{{ section.settings.hero_logo | img_url: 'master' }}" alt="Vellora Logo" class="hero__logo">
+        {{ section.settings.hero_logo | image_url: width: 500 | image_tag: class: 'hero__logo', loading: 'eager', alt: 'Vellora Logo' }}
       {% else %}
         <h1 class="hero__title">VELLORA PARIS</h1>
       {% endif %}

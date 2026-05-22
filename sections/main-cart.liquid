@@ -21,7 +21,7 @@
               <div class="cart-item">
                 <div class="cart-item__product">
                   <a href="{{ item.url }}" class="cart-item__image">
-                    <img src="{{ item.image | img_url: '200x' }}" alt="{{ item.title }}" loading="lazy">
+                    {{ item.image | image_url: width: 200x | image_tag: loading: 'lazy', alt: item.title }}
                   </a>
                   <div class="cart-item__details">
                     {% if item.vendor %}

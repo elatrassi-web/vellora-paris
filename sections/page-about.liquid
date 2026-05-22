@@ -1,6 +1,6 @@
 <div class="page-about" data-section-id="{{ section.id }}">
   {% if section.settings.hero_image != blank %}
-    <div class="page-hero" style="background-image: url('{{ section.settings.hero_image | img_url: '1920x' }}');">
+    <div class="page-hero" style="background-image: url('{{ section.settings.hero_image | image_url: width: 1920 }}');">
       <div class="page-hero__overlay"></div>
       <h1 class="page-hero__title fade-up">NOTRE HISTOIRE</h1>
     </div>
@@ -29,7 +29,7 @@
 
       {% if section.settings.side_image != blank %}
         <div class="page-about__image fade-up" style="animation-delay: 0.2s;">
-          <img src="{{ section.settings.side_image | img_url: '800x' }}" alt="À propos de nous" loading="lazy">
+          {{ section.settings.side_image | image_url: width: 800 | image_tag: loading: 'lazy', alt: 'À propos de nous' }}
         </div>
       {% endif %}
     </div>

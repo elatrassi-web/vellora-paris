@@ -10,7 +10,7 @@
         <div class="lookbook__item fade-up" style="animation-delay: {{ forloop.index | modulo: 3 | times: 0.1 }}s">
           <div class="lookbook__image-wrapper" onclick="openLookbookModal('lookbook-modal-{{ block.id }}')">
             {% if block.settings.image != blank %}
-              <img src="{{ block.settings.image | img_url: '800x' }}" alt="Lookbook image" loading="lazy">
+              {{ block.settings.image | image_url: width: 800 | image_tag: loading: 'lazy', alt: 'Lookbook image' }}
             {% else %}
               <div class="lookbook__placeholder">Image</div>
             {% endif %}
@@ -38,7 +38,7 @@
         <div class="lookbook__modal-layout">
           <div class="lookbook__modal-image">
             {% if block.settings.image != blank %}
-              <img src="{{ block.settings.image | img_url: '1000x' }}" alt="Look" loading="lazy">
+              {{ block.settings.image | image_url: width: 1000 | image_tag: loading: 'lazy', alt: 'Look' }}
             {% else %}
               <div class="lookbook__placeholder">Image</div>
             {% endif %}
@@ -56,7 +56,7 @@
                   {% assign has_products = true %}
                   <div class="lookbook__product-item">
                     <a href="{{ product.url }}" class="lookbook__product-img">
-                      <img src="{{ product.featured_image | img_url: '200x' }}" alt="{{ product.title }}" loading="lazy">
+                      {{ product.featured_image | image_url: width: 200x | image_tag: loading: 'lazy', alt: product.title }}
                     </a>
                     <div class="lookbook__product-info">
                       <a href="{{ product.url }}" class="lookbook__product-title">{{ product.title }}</a>

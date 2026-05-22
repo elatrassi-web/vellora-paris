@@ -5,8 +5,8 @@
     <div class="product__gallery">
       <div class="product__gallery-main" id="product-gallery-main">
         {% for image in product.images %}
-          <div class="product__gallery-slide {% if forloop.first %}is-active{% endif %}" data-index="{{ forloop.index0 }}" onclick="openImageZoom('{{ image | img_url: 'master' }}')" style="cursor: zoom-in;">
-            <img src="{{ image | img_url: '1000x' }}" alt="{{ image.alt | escape }}" data-zoom="{{ image | img_url: 'master' }}">
+          <div class="product__gallery-slide {% if forloop.first %}is-active{% endif %}" data-index="{{ forloop.index0 }}" onclick="openImageZoom('{{ image | image_url }}')" style="cursor: zoom-in;">
+            {{ image | image_url: width: 1000 | image_tag: alt: image.alt, data-zoom: image }}
           </div>
         {% endfor %}
         <!-- Navigation Arrows (Mobile) -->
@@ -19,7 +19,7 @@
       <div class="product__gallery-thumbs d-none d-lg-flex">
         {% for image in product.images %}
           <button class="product__thumb {% if forloop.first %}is-active{% endif %}" onclick="goToSlide({{ forloop.index0 }})">
-            <img src="{{ image | img_url: '150x' }}" alt="{{ image.alt | escape }}" loading="lazy">
+            {{ image | image_url: width: 150 | image_tag: loading: 'lazy', alt: image.alt }}
           </button>
         {% endfor %}
       </div>

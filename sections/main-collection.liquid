@@ -2,7 +2,7 @@
   <!-- Collection Header -->
   <div class="collection__header">
     {% if collection.image %}
-      <img src="{{ collection.image | img_url: '1920x' }}" alt="{{ collection.title }}" class="collection__banner">
+      {{ collection.image | image_url: width: 1920 | image_tag: class: 'collection__banner', loading: 'lazy', alt: collection.title }}
     {% else %}
       <div class="collection__banner collection__banner--placeholder"></div>
     {% endif %}
@@ -104,9 +104,9 @@
           {% for product in collection.products %}
             <div class="product-card fade-up" style="animation-delay: {{ forloop.index | modulo: 4 | times: 0.1 }}s">
               <a href="{{ product.url }}" class="product-card__image-wrapper">
-                <img src="{{ product.featured_image | img_url: '600x' }}" alt="{{ product.title }}" class="product-card__image" loading="lazy">
+                {{ product.featured_image | image_url: width: 600 | image_tag: class: 'product-card__image', loading: 'lazy', alt: product.title }}
                 {% if product.images.size > 1 %}
-                  <img src="{{ product.images[1] | img_url: '600x' }}" alt="{{ product.title }} back" class="product-card__image-hover" loading="lazy">
+                  {{ product.images[1] | image_url: width: 600 | image_tag: class: 'product-card__image-hover', loading: 'lazy', alt: product.title }}
                 {% endif %}
 
                 {% if product.tags contains 'Edition Limitée' %}
