@@ -50,7 +50,10 @@
               <path d="M75 15 L50 95 L40 95 L15 15 L25 15 L45 80 L65 15 Z" fill="var(--color-primary)"/>
             </svg>
           </div>
-          <h2>VELLORA <br><span>PARIS</span></h2>
+          {% if template.name == 'index' and section.settings.logo == blank %}
+            <h1 class="sr-only">VELLORA PARIS</h1>
+          {% endif %}
+          <div style="margin: 0; font-size: 1.2rem; line-height: 1.1; letter-spacing: 6px; font-weight: 500;">VELLORA <br><span style="font-size: 0.75rem; letter-spacing: 8px; font-weight: 300; display: block; margin-top: 2px;">PARIS</span></div>
         {% endif %}
       </a>
 
