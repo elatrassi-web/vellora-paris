@@ -7,6 +7,10 @@
     <meta name="theme-color" content="{{ settings.color_primary }}">
     <link rel="canonical" href="{{ canonical_url }}">
 
+    {% if settings.favicon != blank %}
+      <link rel="shortcut icon" href="{{ settings.favicon | img_url: '32x32' }}" type="image/png">
+    {% endif %}
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&family=Poppins:wght@300;400&display=swap" rel="stylesheet">

@@ -8,6 +8,17 @@
     "theme_documentation_url": ""
   },
   {
+    "name": "Favicon",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Image Favicon",
+        "info": "Une petite image carrée affichée dans l'onglet du navigateur (recommandé 32x32px)"
+      }
+    ]
+  },
+  {
     "name": "Couleurs",
     "settings": [
       {
