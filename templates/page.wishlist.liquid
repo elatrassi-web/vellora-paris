@@ -70,7 +70,7 @@
         const card = document.createElement('div');
         card.className = 'product-card';
         card.innerHTML = `
-          <a href="${product.url}" class="product-card__image-wrapper">
+          <a href="${product.url}" class="product-card__image-wrapper hover-zoom">
             <img src="${product.featured_image}" alt="${product.title}" class="product-card__image">
 
             <div class="product-card__auth-badge" style="position: absolute; top: 0; left: 0; width: 100%; background-color: rgba(255, 255, 255, 0.9); color: #1a1a1a; font-size: 0.7rem; font-weight: bold; padding: 6px 10px; display: flex; align-items: center; justify-content: center; gap: 4px; z-index: 2; text-transform: uppercase; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">

@@ -36,14 +36,14 @@
           {% assign product_tags_string = product.tags | join: ' ' | downcase %}
           {% assign product_categories = product.type | downcase | append: ' ' | append: product_tags_string %}
           <div class="product-card js-filtered-product" data-categories="{{ product_categories }}">
-            <a href="{{ product.url }}" class="product-card__image-wrapper">
+            <a href="{{ product.url }}" class="product-card__image-wrapper hover-zoom">
               <img src="{{ product.featured_image | img_url: '600x' }}" alt="{{ product.title }}" class="product-card__image">
               {% if product.images.size > 1 %}
                 <img src="{{ product.images[1] | img_url: '600x' }}" alt="{{ product.title }} back" class="product-card__image-hover">
               {% endif %}
 
               {% if product.tags contains 'Nouveau' %}
-                <span class="product-card__badge">NOUVEAU</span>
+                <span class="product-card__badge animate-pulse">NOUVEAU</span>
               {% endif %}
 
               <div class="product-card__auth-badge">

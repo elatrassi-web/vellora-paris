@@ -14,6 +14,13 @@
           <button onclick="prevSlide()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
           <button onclick="nextSlide()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
         </div>
+
+        <!-- Pagination Dots (Mobile) -->
+        <div class="product__gallery-pagination d-lg-none" id="gallery-pagination">
+          {% for image in product.images %}
+            <div class="gallery-dot {% if forloop.first %}is-active{% endif %}" onclick="goToSlide({{ forloop.index0 }})"></div>
+          {% endfor %}
+        </div>
       </div>
 
       <div class="product__gallery-thumbs d-none d-lg-flex">
@@ -217,6 +224,27 @@
     justify-content: center;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
   }
+  .product__gallery-pagination {
+    position: absolute;
+    bottom: 15px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    z-index: 2;
+  }
+  .gallery-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    transition: background 0.3s ease;
+  }
+  .gallery-dot.is-active {
+    background: var(--color-primary);
+  }
+
   .product__gallery-thumbs {
     display: flex;
     gap: 15px;
@@ -420,15 +448,18 @@
   let currentSlide = 0;
   const slides = document.querySelectorAll('.product__gallery-slide');
   const thumbs = document.querySelectorAll('.product__thumb');
+  const dots = document.querySelectorAll('.gallery-dot');
 
   function goToSlide(index) {
     slides[currentSlide].classList.remove('is-active');
     if(thumbs[currentSlide]) thumbs[currentSlide].classList.remove('is-active');
+    if(dots[currentSlide]) dots[currentSlide].classList.remove('is-active');
 
     currentSlide = index;
 
     slides[currentSlide].classList.add('is-active');
     if(thumbs[currentSlide]) thumbs[currentSlide].classList.add('is-active');
+    if(dots[currentSlide]) dots[currentSlide].classList.add('is-active');
   }
 
   function nextSlide() {
@@ -451,11 +482,17 @@
   if(galleryMain) {
     galleryMain.addEventListener('touchstart', e => {
       touchstartX = e.changedTouches[0].screenX;
-    });
+    }, {passive: true});
+
+    galleryMain.addEventListener('touchmove', e => {
+      // Optional: Prevent default scrolling if swiping horizontally
+      // but keep it if scrolling vertically.
+    }, {passive: true});
+
     galleryMain.addEventListener('touchend', e => {
       touchendX = e.changedTouches[0].screenX;
       handleSwipe();
-    });
+    }, {passive: true});
   }
 
   function handleSwipe() {

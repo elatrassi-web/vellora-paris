@@ -109,6 +109,21 @@
     updateMiniCartContent();
   }
 
+  // Hook for Add to Cart shake animation
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('form[action="/cart/add"]').forEach(form => {
+      form.addEventListener('submit', (e) => {
+        const cartIcon = document.querySelector('button[aria-label="Panier"] svg');
+        if (cartIcon) {
+          cartIcon.classList.add('animate-shake');
+          setTimeout(() => {
+            cartIcon.classList.remove('animate-shake');
+          }, 500);
+        }
+      });
+    });
+  });
+
   function closeMiniCart() {
     document.getElementById('mini-cart').classList.remove('is-open');
     document.body.style.overflow = '';

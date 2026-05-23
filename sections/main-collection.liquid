@@ -103,7 +103,7 @@
         {% paginate collection.products by 12 %}
           {% for product in collection.products %}
             <div class="product-card fade-up" style="animation-delay: {{ forloop.index | modulo: 4 | times: 0.1 }}s">
-              <a href="{{ product.url }}" class="product-card__image-wrapper">
+              <a href="{{ product.url }}" class="product-card__image-wrapper hover-zoom">
                 <img src="{{ product.featured_image | img_url: '600x' }}" alt="{{ product.title }}" class="product-card__image">
                 {% if product.images.size > 1 %}
                   <img src="{{ product.images[1] | img_url: '600x' }}" alt="{{ product.title }} back" class="product-card__image-hover">
@@ -112,7 +112,7 @@
                 {% if product.tags contains 'Edition Limitée' %}
                   <span class="product-card__badge product-card__badge--dark">ÉDITION LIMITÉE</span>
                 {% elsif product.tags contains 'Nouveau' %}
-                  <span class="product-card__badge">NOUVEAU</span>
+                  <span class="product-card__badge animate-pulse">NOUVEAU</span>
                 {% endif %}
 
                 <div class="product-card__auth-badge">

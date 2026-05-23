@@ -133,8 +133,40 @@ button {
   to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@keyframes shake {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(-10deg); }
+  50% { transform: rotate(10deg); }
+  75% { transform: rotate(-10deg); }
+  100% { transform: rotate(0deg); }
+}
+
 .fade-in {
   animation: fadeIn 1s ease forwards;
+}
+
+.fade-in-scale {
+  opacity: 0;
+  transform: scale(0);
+  transition: opacity 1s ease, transform 1s ease;
+}
+.fade-in-scale.is-visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.fade-in-simple {
+  opacity: 0;
+  transition: opacity 1s ease 1.5s; /* 1.5s delay requested */
+}
+.fade-in-simple.is-visible {
+  opacity: 1;
 }
 
 .fade-up {
@@ -146,6 +178,25 @@ button {
 .fade-up.is-visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+.animate-pulse {
+  animation: pulse 2s infinite ease-in-out;
+}
+
+.animate-shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+/* Hover Animations */
+.hover-zoom {
+  overflow: hidden;
+}
+.hover-zoom img {
+  transition: transform 0.3s ease;
+}
+.hover-zoom:hover img {
+  transform: scale(1.1);
 }
 
 /* Back to Top */
