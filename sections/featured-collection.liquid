@@ -36,20 +36,15 @@
           {% assign product_tags_string = product.tags | join: ' ' | downcase %}
           {% assign product_categories = product.type | downcase | append: ' ' | append: product_tags_string %}
           <div class="product-card js-filtered-product" data-categories="{{ product_categories }}">
-            <a href="{{ product.url }}" class="product-card__image-wrapper">
+            <a href="{{ product.url }}" class="product-card__image-wrapper hover-zoom">
               <img src="{{ product.featured_image | img_url: '600x' }}" alt="{{ product.title }}" class="product-card__image">
               {% if product.images.size > 1 %}
                 <img src="{{ product.images[1] | img_url: '600x' }}" alt="{{ product.title }} back" class="product-card__image-hover">
               {% endif %}
 
               {% if product.tags contains 'Nouveau' %}
-                <span class="product-card__badge">NOUVEAU</span>
+                <span class="product-card__badge animate-pulse">NOUVEAU</span>
               {% endif %}
-
-              <div class="product-card__auth-badge">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                Authentique Vérifié
-              </div>
 
               <button class="product-card__quick-view" onclick="event.preventDefault(); openQuickView('{{ product.handle }}')">VOIR LE PRODUIT</button>
             </a>
@@ -223,27 +218,6 @@
     padding: 4px 8px;
     z-index: 2;
     animation: pulse 2s infinite;
-  }
-  .product-card__auth-badge {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background-color: rgba(255, 255, 255, 0.9);
-    color: #1a1a1a;
-    font-size: 0.7rem;
-    font-weight: bold;
-    padding: 6px 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    z-index: 2;
-    text-transform: uppercase;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  }
-  .product-card__auth-badge svg {
-    color: #2e7d32; /* Green check */
   }
   @keyframes pulse {
     0% { transform: scale(1); }

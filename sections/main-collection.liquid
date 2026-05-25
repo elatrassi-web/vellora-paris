@@ -14,8 +14,11 @@
     </div>
   </div>
 
-  <div class="collection__container-full">
+  <div class="breadcrumbs-wrapper" style="padding: 0 20px; max-width: 100%; margin-bottom: 20px;">
+    {% render 'breadcrumbs' %}
+  </div>
 
+  <div class="collection__container-full">
     <!-- Mobile Sticky Filter Button -->
     <button class="collection__mobile-sticky-btn d-lg-none" onclick="toggleFilters()" aria-label="Ouvrir les filtres">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
@@ -103,7 +106,7 @@
         {% paginate collection.products by 12 %}
           {% for product in collection.products %}
             <div class="product-card fade-up" style="animation-delay: {{ forloop.index | modulo: 4 | times: 0.1 }}s">
-              <a href="{{ product.url }}" class="product-card__image-wrapper">
+              <a href="{{ product.url }}" class="product-card__image-wrapper hover-zoom">
                 <img src="{{ product.featured_image | img_url: '600x' }}" alt="{{ product.title }}" class="product-card__image">
                 {% if product.images.size > 1 %}
                   <img src="{{ product.images[1] | img_url: '600x' }}" alt="{{ product.title }} back" class="product-card__image-hover">
@@ -112,13 +115,8 @@
                 {% if product.tags contains 'Edition Limitée' %}
                   <span class="product-card__badge product-card__badge--dark">ÉDITION LIMITÉE</span>
                 {% elsif product.tags contains 'Nouveau' %}
-                  <span class="product-card__badge">NOUVEAU</span>
+                  <span class="product-card__badge animate-pulse">NOUVEAU</span>
                 {% endif %}
-
-                <div class="product-card__auth-badge">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                  Authentique Vérifié
-                </div>
 
                 <!-- Wishlist Icon -->
                 <button class="product-card__wishlist" onclick="event.preventDefault(); toggleWishlist('{{ product.handle }}')" aria-label="Ajouter aux favoris">
@@ -410,27 +408,6 @@
   }
   .product-card__badge--dark {
     background-color: var(--color-secondary);
-  }
-  .product-card__auth-badge {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background-color: rgba(255, 255, 255, 0.9);
-    color: #1a1a1a;
-    font-size: 0.7rem;
-    font-weight: bold;
-    padding: 6px 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    z-index: 2;
-    text-transform: uppercase;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  }
-  .product-card__auth-badge svg {
-    color: #2e7d32;
   }
 
   .pagination {

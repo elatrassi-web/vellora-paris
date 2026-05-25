@@ -1,16 +1,28 @@
 <div class="brands-grid" data-section-id="{{ section.id }}">
-  <div class="container">
+  <div class="container-fluid" style="overflow: hidden;">
     <h2 class="brands-grid__title fade-up">NOS MARQUES PARTENAIRES</h2>
-    <div class="brands-grid__wrapper">
-      {% for block in section.blocks %}
-        <a href="{{ block.settings.link }}" class="brands-grid__item fade-up" style="animation-delay: {{ forloop.index | times: 0.1 }}s">
-          {% if block.settings.image != blank %}
-            <img src="{{ block.settings.image | img_url: '400x' }}" alt="{{ block.settings.title }}" loading="lazy">
-          {% else %}
-            <div class="brands-grid__placeholder">{{ block.settings.title }}</div>
-          {% endif %}
-        </a>
-      {% endfor %}
+    <div class="brands-marquee-container">
+      <div class="brands-marquee">
+        <!-- Render blocks twice for seamless infinite scrolling -->
+        {% for block in section.blocks %}
+          <a href="{{ block.settings.link }}" class="brands-grid__item">
+            {% if block.settings.image != blank %}
+              <img src="{{ block.settings.image | img_url: '400x' }}" alt="{{ block.settings.title }}" loading="lazy">
+            {% else %}
+              <div class="brands-grid__placeholder">LOGO</div>
+            {% endif %}
+          </a>
+        {% endfor %}
+        {% for block in section.blocks %}
+          <a href="{{ block.settings.link }}" class="brands-grid__item">
+            {% if block.settings.image != blank %}
+              <img src="{{ block.settings.image | img_url: '400x' }}" alt="{{ block.settings.title }}" loading="lazy">
+            {% else %}
+              <div class="brands-grid__placeholder">LOGO</div>
+            {% endif %}
+          </a>
+        {% endfor %}
+      </div>
     </div>
   </div>
 </div>
@@ -19,6 +31,7 @@
   .brands-grid {
     padding: 60px 0;
     background-color: var(--color-background);
+    overflow: hidden;
   }
   .brands-grid__title {
     text-align: center;
@@ -26,43 +39,73 @@
     letter-spacing: 2px;
     margin-bottom: 40px;
   }
-  .brands-grid__wrapper {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+  .brands-marquee-container {
+    width: 100vw;
+    overflow: hidden;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
   }
-  @media screen and (min-width: 1024px) {
-    .brands-grid__wrapper {
-      grid-template-columns: repeat(4, 1fr);
-      gap: 40px;
-    }
-  }
-  .brands-grid__item {
+  .brands-marquee {
     display: flex;
     align-items: center;
+    width: max-content;
+    animation: marquee 20s linear infinite;
+  }
+  .brands-marquee:hover {
+    animation-play-state: paused;
+  }
+  .brands-grid__item {
+    display: inline-flex;
+    align-items: center;
     justify-content: center;
-    padding: 20px;
-    border: 1px solid transparent;
+    padding: 0 40px;
     transition: all 0.3s ease;
     filter: grayscale(100%);
     opacity: 0.7;
+    text-decoration: none;
   }
   .brands-grid__item:hover {
     filter: grayscale(0%);
     opacity: 1;
     transform: scale(1.05);
-    border-color: var(--color-border);
   }
   .brands-grid__item img {
-    max-height: 80px;
+    max-height: 60px;
     width: auto;
+    display: block;
   }
+  @media screen and (min-width: 768px) {
+    .brands-grid__item img {
+      max-height: 80px;
+    }
+    .brands-grid__item {
+      padding: 0 60px;
+    }
+  }
+  /* Fallback placeholder for empty image blocks */
   .brands-grid__placeholder {
-    font-family: var(--font-heading);
-    font-weight: bold;
-    font-size: 1.2rem;
+    width: 120px;
+    height: 60px;
+    background-color: var(--color-border);
     color: var(--color-text-secondary);
-    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+  }
+
+  @keyframes marquee {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
   }
 </style>
 

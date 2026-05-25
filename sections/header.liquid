@@ -1,12 +1,12 @@
 <header class="header" data-section-id="{{ section.id }}" data-section-type="header">
   <div class="header__top-bar">
     <div class="container">
-      <p>LIVRAISON GRATUITE DANS LE MONDE ENTIER</p>
+      <p class="fade-in-simple">LIVRAISON GRATUITE DANS LE MONDE ENTIER</p>
     </div>
   </div>
 
   <div class="header__main">
-    <div class="container header__container">
+    <div class="header__container-full header__container">
       <!-- Mobile Menu Toggle -->
       <button class="header__icon header__icon--menu d-lg-none" aria-label="Menu" onclick="toggleMobileMenu()">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
@@ -40,7 +40,7 @@
       </div>
 
       <!-- Logo -->
-      <a href="/" class="header__logo">
+      <a href="/" class="header__logo fade-in-scale">
         {% if section.settings.logo %}
           <img src="{{ section.settings.logo | img_url: 'master' }}" alt="{{ shop.name }}">
         {% else %}
@@ -50,7 +50,10 @@
               <path d="M75 15 L50 95 L40 95 L15 15 L25 15 L45 80 L65 15 Z" fill="var(--color-primary)"/>
             </svg>
           </div>
-          <h2>VELLORA <br><span>PARIS</span></h2>
+          {% if template.name == 'index' and section.settings.logo == blank %}
+            <h1 class="sr-only">VELLORA PARIS</h1>
+          {% endif %}
+          <div style="margin: 0; font-size: 1.2rem; line-height: 1.1; letter-spacing: 6px; font-weight: 500;">VELLORA <br><span style="font-size: 0.75rem; letter-spacing: 8px; font-weight: 300; display: block; margin-top: 2px;">PARIS</span></div>
         {% endif %}
       </a>
 
@@ -112,9 +115,20 @@
         </ul>
       </nav>
 
+      <!-- Always visible search bar (Desktop) -->
+      <div class="header__search-wrapper d-none d-lg-block">
+        <form action="/search" method="get" class="header__search-form">
+          <input type="text" name="q" placeholder="Rechercher..." autocomplete="off" id="desktop-search-input">
+          <button type="submit" aria-label="Rechercher">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </button>
+        </form>
+        <div class="header__search-results" id="desktop-search-results"></div>
+      </div>
+
       <!-- Icons -->
       <div class="header__icons">
-        <button class="header__icon" aria-label="Recherche" onclick="toggleSearch()">
+        <button class="header__icon d-lg-none" aria-label="Recherche" onclick="toggleSearch()">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         </button>
         <a href="{{ routes.account_url }}" class="header__icon" aria-label="Compte">
@@ -162,6 +176,9 @@
   .header.is-sticky {
     box-shadow: 0 2px 10px rgba(0,0,0,0.05);
   }
+  .header.is-hidden {
+    transform: translateY(-100%);
+  }
   .header__top-bar {
     background-color: var(--color-primary);
     color: var(--color-background);
@@ -177,6 +194,17 @@
     align-items: center;
     height: 80px;
     transition: height 0.3s ease;
+  }
+  .header__container-full {
+    width: 100%;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  @media screen and (min-width: 768px) {
+    .header__container-full {
+      padding-left: 40px;
+      padding-right: 40px;
+    }
   }
   .header.is-sticky .header__container {
     height: 60px;
@@ -344,6 +372,67 @@
     justify-content: center;
   }
 
+  /* Desktop Search Styles */
+  .header__search-wrapper {
+    position: relative;
+    width: 250px;
+  }
+  .header__search-form {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .header__search-form input {
+    width: 100%;
+    border: none;
+    outline: none;
+    padding: 8px 0;
+    font-size: 0.9rem;
+    font-family: var(--font-body);
+    background: transparent;
+  }
+  .header__search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 300px;
+    background: var(--color-background);
+    border: 1px solid var(--color-border);
+    max-height: 400px;
+    overflow-y: auto;
+    z-index: 10;
+    display: none;
+    padding: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  }
+  .header__search-results.is-active {
+    display: block;
+  }
+  .search-result-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .search-result-item:last-child {
+    border-bottom: none;
+  }
+  .search-result-item img {
+    width: 50px;
+    height: 65px;
+    object-fit: cover;
+  }
+  .search-result-item p {
+    font-size: 0.85rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  .search-result-item span {
+    font-size: 0.8rem;
+    color: var(--color-text-secondary);
+  }
+
   /* Smart Search Styles */
   .smart-search {
     position: absolute;
@@ -490,36 +579,55 @@
   }
 
   // Simple AJAX search implementation
-  const searchInput = document.getElementById('search-input');
-  const searchResults = document.getElementById('search-results');
+  function setupSearch(inputId, resultsId) {
+    const input = document.getElementById(inputId);
+    const results = document.getElementById(resultsId);
+    if (!input || !results) return;
 
-  searchInput.addEventListener('input', debounce(function() {
-    const query = this.value;
-    if (query.length > 2) {
-      fetch(`/search/suggest.json?q=${query}&resources[type]=product`)
-        .then(response => response.json())
-        .then(data => {
-          const products = data.resources.results.products;
-          if (products.length > 0) {
-            let html = '';
-            products.forEach(product => {
-              html += `
-                <a href="${product.url}" class="search-result-item">
-                  <img src="${product.image}" alt="${product.title}">
-                  <p>${product.title}</p>
-                  <span>${product.price}</span>
-                </a>
-              `;
-            });
-            searchResults.innerHTML = html;
-          } else {
-            searchResults.innerHTML = '<p>Aucun résultat trouvé.</p>';
-          }
-        });
-    } else {
-      searchResults.innerHTML = '';
-    }
-  }, 300));
+    input.addEventListener('input', debounce(function() {
+      const query = this.value;
+      if (query.length > 2) {
+        results.classList.add('is-active');
+        fetch(`/search/suggest.json?q=${query}&resources[type]=product`)
+          .then(response => response.json())
+          .then(data => {
+            const products = data.resources.results.products;
+            if (products.length > 0) {
+              let html = '';
+              products.forEach(product => {
+                // Formatting raw float price to French format (e.g. 179.00 -> 179,00 €)
+                let formattedPrice = parseFloat(product.price).toFixed(2).replace('.', ',') + ' €';
+                html += `
+                  <a href="${product.url}" class="search-result-item">
+                    <img src="${product.image}" alt="${product.title}">
+                    <div>
+                      <p>${product.title}</p>
+                      <span>${formattedPrice}</span>
+                    </div>
+                  </a>
+                `;
+              });
+              results.innerHTML = html;
+            } else {
+              results.innerHTML = '<p>Aucun résultat trouvé.</p>';
+            }
+          });
+      } else {
+        results.classList.remove('is-active');
+        results.innerHTML = '';
+      }
+    }, 300));
+
+    // Close on outside click
+    document.addEventListener('click', (e) => {
+      if (!input.contains(e.target) && !results.contains(e.target)) {
+        results.classList.remove('is-active');
+      }
+    });
+  }
+
+  setupSearch('search-input', 'search-results');
+  setupSearch('desktop-search-input', 'desktop-search-results');
 
   function debounce(func, wait) {
     let timeout;
@@ -534,6 +642,7 @@
 {% schema %}
 {
   "name": "Header",
+  "class": "header-section",
   "settings": [
     {
       "type": "image_picker",

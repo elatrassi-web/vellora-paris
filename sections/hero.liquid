@@ -15,6 +15,7 @@
   <div class="hero__content">
     <div class="hero__logo-wrapper fade-up">
       {% if section.settings.hero_logo != blank %}
+        <h1 class="sr-only">{{ shop.name }}</h1>
         <img src="{{ section.settings.hero_logo | img_url: 'master' }}" alt="Vellora Logo" class="hero__logo">
       {% else %}
         <h1 class="hero__title">VELLORA PARIS</h1>

@@ -17,9 +17,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }, observerOptions);
 
-  document.querySelectorAll('.fade-up').forEach(element => {
+  document.querySelectorAll('.fade-up, .fade-in-scale, .fade-in-simple').forEach(element => {
     observer.observe(element);
   });
+
+  // Make observe function globally available for elements injected via AJAX
+  window.observeFadeUps = function() {
+    document.querySelectorAll('.fade-up:not(.is-visible), .fade-in-scale:not(.is-visible), .fade-in-simple:not(.is-visible)').forEach(element => {
+      observer.observe(element);
+    });
+  };
 
   // Back to Top Button
   const backToTopBtn = document.getElementById('back-to-top');
@@ -51,6 +58,13 @@ document.addEventListener('DOMContentLoaded', () => {
         header.classList.add('is-sticky');
       } else {
         header.classList.remove('is-sticky');
+      }
+
+      // Hide header on down-scroll, show on up-scroll if passed 50px
+      if (window.scrollY > lastScrollY && window.scrollY > 150) {
+        header.classList.add('is-hidden');
+      } else {
+        header.classList.remove('is-hidden');
       }
       lastScrollY = window.scrollY;
     }
