@@ -1,4 +1,8 @@
 <div class="product-page" data-section-id="{{ section.id }}">
+  <div class="breadcrumbs-wrapper container" style="margin-top: 20px; margin-bottom: 20px;">
+    {% render 'breadcrumbs' %}
+  </div>
+
   <div class="container product__container">
 
     <!-- Gallery -->
@@ -34,7 +38,6 @@
 
     <!-- Product Info -->
     <div class="product__info fade-up">
-      {% render 'breadcrumbs' %}
       <div class="product__vendor-auth-wrapper">
         {% if product.vendor %}
           <p class="product__vendor">{{ product.vendor }}</p>
