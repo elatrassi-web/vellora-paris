@@ -70,7 +70,7 @@ def is_clothing_or_shoes(title):
     return False
 
 def main():
-    target_count = 100
+    target_count = 500
     products = []
     page = 1
 
@@ -137,8 +137,8 @@ def main():
 
     # Generate simple CSV
     df = pd.DataFrame(products)
-    df.to_csv('yupoo_produits_100.csv', index=False)
-    print("CSV saved as yupoo_produits_100.csv")
+    df.to_csv('yupoo_produits_500.csv', index=False)
+    print("CSV saved as yupoo_produits_500.csv")
     print(f"Images downloaded in {IMAGES_DIR}/ directory.")
 
 if __name__ == "__main__":
