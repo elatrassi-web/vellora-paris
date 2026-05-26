@@ -109,7 +109,7 @@ def main():
                     img_src = "https:" + img_src
 
             base_handle = re.sub(r'[^a-z0-9]+', '-', title.lower()).strip('-')
-            handle = f\"{base_handle}-{len(products)}\"
+            handle = f"{base_handle}-{len(products)}"
 
             # Download image
             if img_src:
