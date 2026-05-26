@@ -51,7 +51,7 @@ def extract_price(title):
 
 def is_clothing_or_shoes(title):
     lower_title = title.lower()
-    exclusions = ["包", "bag", "眼镜", "sunglasses", "帽", "hat", "cap", "皮带", "belt", "耳机", "headphones", "earbuds", "case", "香水", "keychain", "音箱", "speaker", "项链", "戒指", "手链", "retro", "home", "away", "jersey", "chelsea", "arsenal", "manchester", "tottenham", "aston villa", "newcastle", "champions league", "m-u"]
+    exclusions = ["包", "bag", "眼镜", "sunglasses", "帽", "hat", "cap", "皮带", "belt", "耳机", "headphones", "earbuds", "case", "香水", "keychain", "音箱", "speaker", "项链", "戒指", "手链", "retro", "home", "away", "jersey", "chelsea", "arsenal", "manchester", "tottenham", "aston villa", "newcastle", "champions league", "m-u", "set", "suit", "pack", "套装", "两件套", "三件套", "组合", "系列套装"]
     for ex in exclusions:
         if ex in lower_title:
             return False
@@ -108,7 +108,8 @@ def main():
                 if img_src and img_src.startswith('//'):
                     img_src = "https:" + img_src
 
-            handle = re.sub(r'[^a-z0-9]+', '-', title.lower()).strip('-')
+            base_handle = re.sub(r'[^a-z0-9]+', '-', title.lower()).strip('-')
+            handle = f\"{base_handle}-{len(products)}\"
 
             # Download image
             if img_src:
