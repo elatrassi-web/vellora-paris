@@ -51,12 +51,12 @@ def extract_price(title):
 
 def is_clothing_or_shoes(title):
     lower_title = title.lower()
-    exclusions = ["包", "bag", "眼镜", "sunglasses", "帽", "hat", "cap", "皮带", "belt", "耳机", "headphones", "earbuds", "case", "香水", "keychain", "音箱", "speaker", "项链", "戒指", "手链"]
+    exclusions = ["包", "bag", "眼镜", "sunglasses", "帽", "hat", "cap", "皮带", "belt", "耳机", "headphones", "earbuds", "case", "香水", "keychain", "音箱", "speaker", "项链", "戒指", "手链", "retro", "home", "away", "jersey", "chelsea", "arsenal", "manchester", "tottenham", "aston villa", "newcastle", "champions league", "m-u"]
     for ex in exclusions:
         if ex in lower_title:
             return False
 
-    inclusions = ["t-shirt", "tee", "shirt", "hoodie", "shoes", "sneaker", "jacket", "pants", "jean", "short", "sweater", "外套", "裤", "短袖", "长袖", "鞋", "马甲", "西装", "连体衣", "polo", "home", "away"]
+    inclusions = ["t-shirt", "tee", "shirt", "hoodie", "shoes", "sneaker", "jacket", "pants", "jean", "short", "sweater", "外套", "裤", "短袖", "长袖", "鞋", "马甲", "西装", "连体衣", "polo"]
     for inc in inclusions:
         if inc in lower_title:
             return True
