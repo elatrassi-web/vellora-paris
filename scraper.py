@@ -71,6 +71,8 @@ def is_clothing_or_shoes(title):
 
 def main():
     target_count = 500
+    skip_count = 500
+    skipped = 0
     products = []
     page = 1
 
@@ -98,6 +100,11 @@ def main():
 
             # Filtre : on ne garde que vêtements et chaussures
             if not is_clothing_or_shoes(title):
+                continue
+
+            if skipped < skip_count:
+                skipped += 1
+                print(f"Skipping product {skipped}/{skip_count}: {title}")
                 continue
 
             img = album.find('img')
@@ -138,8 +145,8 @@ def main():
 
     # Generate simple CSV
     df = pd.DataFrame(products)
-    df.to_csv('yupoo_produits_500.csv', index=False)
-    print("CSV saved as yupoo_produits_500.csv")
+    df.to_csv('yupoo_produits_501_1000.csv', index=False)
+    print("CSV saved as yupoo_produits_501_1000.csv")
     print(f"Images downloaded in {IMAGES_DIR}/ directory.")
 
 if __name__ == "__main__":
