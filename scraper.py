@@ -5,7 +5,7 @@ import re
 import time
 import os
 
-BASE_URL = "https://3125tiger.x.yupoo.com/categories/4901712?page="
+BASE_URL = "https://3125tiger.x.yupoo.com/categories/3342237?page="
 ALBUM_BASE_URL = "https://3125tiger.x.yupoo.com"
 IMAGES_DIR = "images"
 
@@ -145,8 +145,8 @@ def main():
 
     # Generate simple CSV
     df = pd.DataFrame(products)
-    df.to_csv('yupoo_categorie_4901712.csv', index=False)
-    print("CSV saved as yupoo_categorie_4901712.csv")
+    df.to_csv('yupoo_categorie_3342237.csv', index=False)
+    print("CSV saved as yupoo_categorie_3342237.csv")
     print(f"Images downloaded in {IMAGES_DIR}/ directory.")
 
 if __name__ == "__main__":
