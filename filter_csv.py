@@ -3,7 +3,7 @@ import os
 
 def filter_csv():
     # Nom du fichier CSV original généré par le scraper
-    input_csv = 'yupoo_produits_500.csv'
+    input_csv = 'yupoo_categorie_4655011.csv'
     output_csv = 'produits_valides.csv'
 
     if not os.path.exists(input_csv):
