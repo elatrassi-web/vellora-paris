@@ -1,0 +1,6 @@
+images/
+*.csv
+__pycache__/
+*.pyc
+images_soccer/
+images_psg/
